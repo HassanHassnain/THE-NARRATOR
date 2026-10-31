@@ -18,4 +18,13 @@
 <details><summary>Transcript fallback</summary><p>For browsers without speech recognition, type what you said. Include “narrator” for an immediate reply.</p><form id="transcriptForm"><input id="transcript" aria-label="Transcript" maxlength="2000" placeholder="Narrator, why did I miss that red door?"><button>Send transcript</button></form></details>
 <p id="speechStatus" aria-live="polite">Microphone off</p>
 </div><div class="log"><h2>Beat log</h2><p>Eyes / writer / voice / total · milliseconds</p><ol id="logs" aria-live="polite"></ol></div></section>
-</main><script type="module" src="./main.ts"></script></body></html>
+<section aria-label="Twitch"><h2>Chat writes the plot</h2>
+<p id="twitchStatus">Twitch disconnected · local narration works without Twitch.</p>
+<label>Channel name <input id="channel" maxlength="25" placeholder="your_channel"></label>
+<div class="row"><button id="readChat">Read chat anonymously</button><button id="authTwitch">Connect with Twitch</button><button id="stopChat">Stop chat &amp; events</button></div>
+<p id="twitchSetup"></p><div id="device" hidden><p>Open <a href="https://www.twitch.tv/activate" target="_blank" rel="noopener">twitch.tv/activate</a> and enter <strong id="deviceCode"></strong>. Authorize your broadcaster account.</p></div>
+<div class="row"><label>Twist mode <select id="twistMode"><option value="approve">Approve on host</option><option value="auto">Auto-accept screened twists</option></select></label><label class="check"><input id="modsOnly" type="checkbox"> Auto-accept only mods / VIPs</label><button id="clearTwists">Clear twist queue</button></div>
+<p id="acceptedTwists"></p><ul id="pendingTwists"></ul>
+<details><summary>Edit banned words</summary><p>One word or phrase per line. Applies to viewer input and the final voice check for this run.</p><textarea id="blocklist" rows="5" aria-label="Banned words"></textarea><button id="saveBlocklist">Apply banned words</button></details>
+<details><summary>Twitch notices</summary><ol id="twitchNotices"></ol></details>
+</section></main><script type="module" src="./main.ts"></script></body></html>

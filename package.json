@@ -15,7 +15,8 @@
     "typecheck": "tsc --noEmit",
     "setup:voice": "node scripts/download-kokoro.mjs",
     "check:local": "tsx scripts/check-local.ts",
-    "check:browser": "tsx scripts/check-browser.ts"
+    "check:browser": "tsx scripts/check-browser.ts",
+    "check:twitch": "tsx scripts/check-twitch.ts"
   },
   "dependencies": {
     "kokoro-js": "^1.2.1",

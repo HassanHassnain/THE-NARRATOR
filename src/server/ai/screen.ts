@@ -1,11 +1,11 @@
-import { blocked, wordCount } from '../config.js';
+import { blocked, wordCount, config } from '../config.js';
 import type { ChatClient } from './interfaces.js';
 export interface Screen { check(text: string, signal: AbortSignal): Promise<{ allow: boolean; reason: string; latencyMs: number }> }
 export class LocalScreen implements Screen {
-  constructor(private client: ChatClient, private model: () => string) {}
+  constructor(private client: ChatClient, private model: () => string, private blocklist: () => string[] = () => config.blocklist) {}
   async check(text: string, signal: AbortSignal) {
     const started = performance.now();
-    if (blocked(text)) return { allow: false, reason: 'Blocked word', latencyMs: 0 };
+    if (blocked(text, this.blocklist())) return { allow: false, reason: 'Blocked word', latencyMs: 0 };
     const result = await this.client.complete({ model: this.model(), temperature: 0, max_tokens: 200,
       ...(this.model().includes('gpt-oss') ? { reasoning_effort: 'low' as const } : {}),
       response_format: { type: 'json_schema', json_schema: { name: 'screen', strict: true, schema: { type: 'object', additionalProperties: false, properties: { allow: { type: 'boolean' }, reason: { type: 'string' } }, required: ['allow', 'reason'] } } },

@@ -15,6 +15,7 @@ import { FakeEyes, FakeWriter, FakeTTS, FakeScreen } from './ai/fakes.js';
 import { FileStore } from './store.js';
 import { BeatRunner } from './director/beatRunner.js';
 import { Director } from './director/index.js';
+import { TwitchService } from './twitch/service.js';
 import { Hub } from './hub.js';
 const pages: Record<string, string> = { '/': '/host/index.html', '/host': '/host/index.html', '/overlay': '/overlay/index.html', '/episode': '/episode/index.html', '/demo': '/demo/index.html' };
 const mime: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.wav': 'audio/wav' };
@@ -25,16 +26,17 @@ export async function createApp(production = false) {
   const defaultLight = !fake && resourceVoiceFallback(false);
   const voice = fake ? undefined : new LocalTTS({ preferSystemVoice: resourceVoiceFallback(defaultLight) });
   const client = fake ? undefined : createLocalClient();
-  const ai = client && voice ? { eyes: new LocalEyes(client), writer: new LocalWriter(client), tts: voice, screen: new LocalScreen(client, writerModel) } : { eyes: new FakeEyes(), writer: new FakeWriter(), tts: new FakeTTS(), screen: new FakeScreen() };
+  const ai = client && voice ? { eyes: new LocalEyes(client), writer: new LocalWriter(client), tts: voice, screen: new LocalScreen(client, () => director.settings.lightMode ? eyesModel() : writerModel(), () => twitch?.router.blocklist ?? config.blocklist) } : { eyes: new FakeEyes(), writer: new FakeWriter(), tts: new FakeTTS(), screen: new FakeScreen() };
+  let twitch: TwitchService | undefined;
   let hub: Hub; let vite: ViteDevServer | undefined;
   let health: Health = { ollama: false, installed: [], missing: [], fixes: [], latencyMs: 0 };
   const logs: BeatLog[] = [];
-  const runner = new BeatRunner(ai, store, beat => hub.broadcast({ type: 'beat', beat }), log => { logs.unshift(log); logs.splice(100); hub.broadcastState(); });
+  const runner = new BeatRunner(ai, store, beat => { hub.broadcast({ type: 'beat', beat }); twitch?.chapter(beat); }, log => { logs.unshift(log); logs.splice(100); hub.broadcastState(); }, 10000, () => twitch?.router.blocklist ?? config.blocklist);
   const director = new Director(runner);
   director.settings.lightMode = defaultLight;
   if (fake) director.state.streamId = `simulated-${director.state.streamId}`;
   const state = (): PublicState => ({ settings: director.settings, story: director.state, health,
-    voice: voice?.status ?? { ready: true, engine: 'fake — SIMULATED' }, overlayKey: key, overlays: hub?.overlays ?? 0, logs, frameAt: director.frameAt, mic: director.mic });
+    twitch: twitch!.snapshot(), voice: voice?.status ?? { ready: true, engine: 'fake — SIMULATED' }, overlayKey: key, overlays: hub?.overlays ?? 0, logs, frameAt: director.frameAt, mic: director.mic });
   let warming = false;
   async function refreshHealth() {
     health = fake ? { ollama: true, installed: [writerModel(), eyesModel()], missing: [], fixes: [], latencyMs: 0 } : await checkHealth(director.settings.lightMode);
@@ -53,6 +55,11 @@ export async function createApp(production = false) {
   }
   function onMessage(message: ClientMessage) {
     if (!message || typeof message !== 'object') return;
+    if (message.type === 'twitch') {
+      if (message.action === 'clear' || message.action === 'blocklist') hub.broadcast({ type: 'stop' });
+      void twitch?.handle(message).catch(error => hub.notice(error instanceof Error ? error.message : 'Twitch control failed'));
+      return;
+    }
     if (message.type === 'settings' && message.settings && typeof message.settings === 'object') {
       const s = message.settings;
       if (typeof s.protagonist === 'string') director.settings.protagonist = s.protagonist.trim().slice(0, 80) || 'Streamer';
@@ -108,10 +115,12 @@ export async function createApp(production = false) {
       response.end(request.method === 'HEAD' ? undefined : await readFile(file));
     } catch (error) { if (!response.headersSent) response.writeHead(error instanceof URIError ? 400 : (error as NodeJS.ErrnoException).code === 'ENOENT' ? 404 : 500); response.end(); }
   });
+  twitch = new TwitchService(director, ai.screen, () => hub.broadcastState(), text => hub.notice(text), fake);
   hub = new Hub(server, key, state, onMessage);
+  void twitch.startSaved().catch(error => hub.notice(String(error)));
   if (!production) { const { createServer: createVite } = await import('vite'); vite = await createVite({ server: { middlewareMode: true, hmr: { server } } }); }
   const interval = setInterval(() => { void director.tick().catch(error => hub.notice(String(error))); }, 500);
   const healthInterval = setInterval(() => { void refreshHealth(); }, 10000);
   void refreshHealth();
-  return { server, director, hub, state, async close() { clearInterval(interval); clearInterval(healthInterval); runner.cancel(); voice?.close(); hub.close(); await vite?.close(); server.closeAllConnections(); await new Promise<void>(resolveClose => server.close(() => resolveClose())); } };
+  return { server, director, hub, twitch, state, async close() { clearInterval(interval); clearInterval(healthInterval); runner.cancel(); voice?.close(); twitch?.close(); hub.close(); await vite?.close(); server.closeAllConnections(); await new Promise<void>(resolveClose => server.close(() => resolveClose())); } };
 }

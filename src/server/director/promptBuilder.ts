@@ -39,5 +39,5 @@ export function buildPrompt(input: PromptInput, budget = config.limits.promptCha
   while (system.length + user.length + examplesSize > budget && context.cast.length) { context.cast.shift(); user = encode(); }
   while (system.length + user.length + examplesSize > budget && context.recentLines.length > 1) { context.recentLines = context.recentLines.slice(1); user = encode(); }
   if (system.length + user.length + examplesSize > budget) throw new Error('Narration context exceeded prompt budget');
-  return { system, user, model: input.model, examples, ...(input.twist ? { twistId: input.twist.id } : {}), allowCast: !!(input.events.length || input.twist || Object.keys(input.state.cast).length), recentLines: [...input.state.recentLines] };
+  return { system, user, model: input.model, examples, ...(input.twist ? { twistId: input.twist.id } : {}), allowCast: !!(input.events.length || input.twist || Object.keys(input.state.cast).length), recentLines: [...input.state.recentLines], recap: input.trigger === 'recap' };
 }

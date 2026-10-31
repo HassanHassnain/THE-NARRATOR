@@ -11,6 +11,7 @@ const deadline = setTimeout(() => { console.error('Browser smoke check exceeded 
 const browser = await chromium.launch({ headless: true, args: ['--autoplay-policy=no-user-gesture-required'] });
 try {
   const context = await browser.newContext({ viewport: { width: 1360, height: 1000 } });
+  context.setDefaultTimeout(5000);
   await context.addInitScript({ content: `
     const canvas = document.createElement('canvas'); canvas.width = 768; canvas.height = 432;
     const c = canvas.getContext('2d'); c.fillStyle = '#b73232'; c.fillRect(0,0,768,432); setInterval(() => c.fillRect(0,0,768,432), 100);
@@ -22,7 +23,8 @@ try {
     }
     Object.defineProperty(window, 'webkitSpeechRecognition', { value: Recognition });
     Object.defineProperty(window, 'SpeechRecognition', { value: Recognition });
-    window.played = 0;
+    window.played = 0; window.creditSeen = false;
+    new MutationObserver(() => { if(document.getElementById('credit')?.textContent?.includes('PlotFriend')) window.creditSeen = true; }).observe(document, {subtree:true, childList:true, characterData:true});
     document.addEventListener('play', () => { window.played++; }, true);
   ` });
   const host = await context.newPage(); const errors: string[] = [];
@@ -51,8 +53,23 @@ try {
   assert.equal((await fetch(base+beats[0]!.audioUrl)).status, 200); assert.equal((await fetch(base+beats[0]!.frameUrl)).status, 200);
   await host.keyboard.press('m'); await host.getByRole('button', { name: 'Unmute (M)' }).waitFor();
   await host.keyboard.press('s');
+  await host.getByRole('button', { name: 'Unmute (M)' }).click();
+  await host.getByRole('button', { name: 'Mute (M)', exact: true }).waitFor();
+  await app.twitch.router.handle({ id:'browser-twist',sourceId:'browser-twist',authorId:'friend',author:'PlotFriend',text:'!twist The cat owned the red door.',badges:[] });
+  await host.locator('#pendingTwists').getByRole('button', { name: 'Approve', exact: true }).click();
+  await host.waitForFunction(async () => (await (await fetch('/api/state')).json()).twitch.accepted.length === 1);
+  assert.equal((await app.director.tick(Date.now()+9000))?.trigger, 'twist');
+  await overlay.waitForFunction(() => (window as unknown as { creditSeen: boolean }).creditSeen);
+  await host.getByText('Edit banned words', { exact: true }).click();
+  await host.locator('#blocklist').fill('red door');
+  await host.getByRole('button', { name: 'Apply banned words', exact: true }).click();
+  await host.waitForFunction(async () => (await (await fetch('/api/state')).json()).twitch.blocklist.includes('red door'));
+  await host.evaluate(() => { (window as unknown as { testRecognition: { onresult: (event: unknown) => void } }).testRecognition.onresult({ resultIndex:0,results:[{isFinal:true,0:{transcript:'Narrator, the red door stayed locked.'}}] }); });
+  await host.locator('#logs li.skipped').first().waitFor();
+  assert.equal(app.state().story.beatCount, 2);
+  await host.locator('#twitchSetup').getByText('TWITCH_CLIENT_ID', { exact: false }).waitFor();
   await mkdir('data/screens', { recursive: true });
   await host.screenshot({ path: 'data/screens/host-phase1.png', fullPage: true });
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ check: 'SIMULATED browser integration', capturedWidth: 768, speechFinalDelivered: true, audioPlayback: true, persistedBeat: true, mute: true, skip: true, pageErrors: errors, streamId: state.story.streamId }));
+  console.log(JSON.stringify({ check: 'SIMULATED browser integration', capturedWidth: 768, speechFinalDelivered: true, audioPlayback: true, persistedBeat: true, mute: true, skip: true, twistApproval: true, overlayCredit: true, editedVoiceBlocklist: true, pageErrors: errors, streamId: state.story.streamId }));
 } finally { await browser.close(); await app.close(); clearTimeout(deadline); }

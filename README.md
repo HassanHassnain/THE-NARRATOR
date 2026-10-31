@@ -71,7 +71,8 @@ in `fixtures/local-scene.jpg`, produces six genre beats, and saves raw results
 in `data/checks/`. No fake AI is used in those measurements. Run the checks
 sequentially so local model calls do not compete with one another.
 
-Episodes, replay and Twitch are later-phase work. The episode and demo pages
+Episodes and replay are later-phase work. Twitch integration is implemented;
+live OAuth/EventSub verification requires your authorization. The episode and demo pages
 are currently placeholders. The demo is explicitly labelled as recorded replay.
 See [the spec](docs/SPEC.md) and [phase evidence](codex-log/PHASE_1.md).
 
@@ -106,3 +107,73 @@ Deleting these caches can require downloads again.
 and its stream IDs start with `simulated-`. It is not a real model benchmark.
 
 MIT licensed; see [LICENSE](LICENSE).
+
+## Go live in 5 minutes
+
+Local narration works without Twitch. To let chat shape it:
+
+1. Start the app with `npm run build && npm start`, then open `/host`.
+2. Enter your Twitch channel name and choose **Read chat anonymously** for
+   read-only IRC. The app never posts messages to chat. Connection failures
+   appear in the host notices; authenticated chat is the alternative.
+3. For authenticated chat and events, register a **Public** Twitch application
+   in the [Twitch developer console](https://dev.twitch.tv/console/apps).
+   See [Twitch's registration instructions](https://dev.twitch.tv/docs/authentication/register-app/)
+   and [public device flow](https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#device-code-grant-flow).
+   Put its client ID in `TWITCH_CLIENT_ID` in `.env`, then restart the server.
+   A client secret is neither used nor required.
+4. Choose **Connect with Twitch**, open `twitch.tv/activate`, enter the displayed
+   code, and authorize your broadcaster account. The host shows chat/event
+   connections and any unavailable subscriptions. Subscription/gift/cheer
+   availability depends on your account and granted permissions.
+5. Add the host's overlay link in OBS as a 1920×1080 Browser Source, with
+   **Control audio via OBS** enabled. Share your game window, enable mic, load
+   models/voice and start the narrator. Keep the host page open.
+
+Chat commands are case-insensitive; the first token must match exactly:
+
+- `!genre noir|nature|epic|sports|horror|heist`: switches the next beat. Votes
+  within the first 30 seconds share a ballot; at least three distinct voters
+  use the most votes, with ties retaining the current genre. A new ballot
+  cannot start until three minutes after the previous ballot began.
+- `!twist <text>`: maximum 120 characters, one proposal per chatter per two
+  minutes, blocklist first, then the local model safety screen. **Approve on
+  host** is the default. Pending plus accepted proposals are capped at three.
+  Approve/reject on the host, or enable auto-accept, optionally for mods/VIPs
+  only. Other viewers still wait for approval in that mode. Accepted authors
+  appear with their twist in the overlay and saved beat.
+- `!recap`: queues a two-sentence story-so-far beat, with a two-minute cooldown.
+
+The banned-word editor applies for the current server run to proposals, viewer
+names, cast updates and the final voice check. Applying changes stops an active
+line; clearing the twist queue also cancels an in-flight proposal. State remains
+intact across IRC/EventSub reconnects. A dropped EventSub connection cannot
+recover events Twitch did not deliver during the gap. New chapter markers are
+created only when authenticated to your own channel and confirmed live; failed
+markers never interrupt narration.
+
+Tokens stay in ignored `data/tokens.json` with private file permissions and are
+refreshed using public-client token rotation. The browser receives neither the
+access token nor refresh token. **Stop chat & events** stops the network sources;
+it preserves the authorized session for a later restart.
+
+`npm run check:twitch` feeds labelled simulated IRC messages and an EventSub
+follow payload through the real command router, director and store with fake
+AI. It verifies voting, Shared Chat dedupe, host approval, credited twist,
+follow and recap beats, and WAV persistence. It makes no Twitch network calls.
+See [Phase 2 evidence](codex-log/PHASE_2.md).
+
+## What you still need to do
+
+The dependencies, both Ollama models and Kokoro cache are installed on this Mac.
+Run `npm run dev` from this repository, then grant Chrome screen/mic access and
+choose the actual game window. Test the narration's taste and timing in your
+real game; the recorded model checks used a static synthetic frame.
+
+For Twitch events, you must supply your Public client ID and personally approve
+the device authorization. From a second account, follow your channel and try
+`!genre noir`, `!twist the cat is the real villain`, and `!recap`. Approve the
+twist in `/host`, verify its audio and credit, and save an OBS recording.
+Tell the next phase which real `streamId` from `data/streams/` is your best
+session. Phase 3's real-session replay cannot be selected from synthetic test
+runs. The episode and demo screens remain placeholders until that phase.

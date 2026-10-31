@@ -46,6 +46,7 @@ export class LocalWriter implements Writer {
         try {
           const normalized = request.model.includes('gpt-oss') && !text.trimStart().startsWith('{') ? '{' + text : text;
           const narration = parseNarration(normalized);
+          if (request.recap && [...new Intl.Segmenter('en', { granularity: 'sentence' }).segment(narration.line)].length !== 2) throw new Error('Recap must contain exactly two short complete sentences, at most 30 words total.');
           if (request.recentLines?.includes(narration.line)) throw new Error('Repeated recent line. Use the latest spoken words and a different concrete detail.');
           return narration;
         } catch (error) { invalid = error; }

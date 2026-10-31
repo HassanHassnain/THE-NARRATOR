@@ -14,7 +14,7 @@ export class BeatRunner {
   async settleSummary() { await this.summaryTask; }
   private captionCache: { hash: string; text: string } | undefined;
   constructor(private ai: { eyes: Eyes; writer: Writer; tts: TTS; screen: Screen }, private store: BeatStore,
-    private publish: (beat: Beat) => void, private log: (log: BeatLog) => void, private timeoutMs = config.limits.beatTimeoutMs ?? 10000) {}
+    private publish: (beat: Beat) => void, private log: (log: BeatLog) => void, private timeoutMs = config.limits.beatTimeoutMs ?? 10000, private bannedWords: () => string[] = () => config.blocklist) {}
   get busy() { return !!this.active; }
   cancel() { this.active?.abort(new Error('Skipped or muted by host')); this.summaryController?.abort(); }
   async run(input: BeatInput): Promise<Beat | undefined> {
@@ -40,20 +40,20 @@ export class BeatRunner {
       const request = buildPrompt({ ...input, caption, model: input.settings.lightMode ? eyesModel() : writerModel() });
       const result = await this.ai.writer.write(request, signal); signal.throwIfAborted();
       latency.writer = result.latencyMs; const narration = result.value; line = narration.line;
-      if (blocked([line, narration.chapterTitle ?? ''].join(' '))) throw new Error('Final blocklist rejected model output');
+      if (blocked([line, narration.chapterTitle ?? ''].join(' '), this.bannedWords())) throw new Error('Final blocklist rejected model output');
       if (input.state.recentLines.includes(line)) throw new Error('Repeated recent line; skipped');
       if (input.twist && narration.usedTwistId !== input.twist.id) throw new Error('Writer did not credit the accepted twist');
       if (narration.usedTwistId && narration.usedTwistId !== input.twist?.id) throw new Error('Writer referenced an unknown twist');
       // Only already-screened viewers can enter the cast. New model inventions never enter canon.
       const known = new Set([...Object.keys(input.state.cast), ...input.state.canon.map(t => t.author), ...input.events.map(e => e.author), ...(input.twist ? [input.twist.author] : [])]);
       for (const cast of narration.castUpdates) {
-        if (!known.has(cast.name) || blocked(`${cast.name} ${cast.role}`)) throw new Error('Unscreened cast update');
+        if (!known.has(cast.name) || blocked(`${cast.name} ${cast.role}`, this.bannedWords())) throw new Error('Unscreened cast update');
         const screened = await this.ai.screen.check(`${cast.name}: ${cast.role}`, signal); signal.throwIfAborted();
         if (!screened.allow) throw new Error('Cast update rejected by safety screen');
       }
       stage = 'tts'; stageStarted = performance.now();
       // Last gate before voice; raw transcript/chat text is never sent to TTS.
-      if (blocked(line)) throw new Error('Final blocklist rejected voice input');
+      if (blocked(line, this.bannedWords())) throw new Error('Final blocklist rejected voice input');
       const speech = await this.ai.tts.speak(line, input.settings.genre, signal, this.timeoutMs - (performance.now() - started)); signal.throwIfAborted();
       latency.tts = speech.latencyMs;
       const id = randomUUID(); const base = `/media/${input.state.streamId}`;
@@ -90,7 +90,7 @@ export class BeatRunner {
         new Promise<never>((_, reject) => controller.signal.addEventListener('abort', () => reject(new Error('Summary cancelled')), { once: true }))
       ]);
       latencyMs = result.latencyMs;
-      if (!controller.signal.aborted && Math.floor(state.beatCount / 5) === Math.floor(revision / 5) && !blocked(result.value)) {
+      if (!controller.signal.aborted && Math.floor(state.beatCount / 5) === Math.floor(revision / 5) && !blocked(result.value, this.bannedWords())) {
         state.summary = result.value; method = 'model';
       }
     } catch { /* Keep the bounded, factual fallback. Summary failures never cost a beat. */ }

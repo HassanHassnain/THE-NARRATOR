@@ -21,7 +21,7 @@ export class Director {
     this.lastAttempt = now; this.state.protagonist = this.settings.protagonist;
     const transcript = this.transcript.splice(0);
     const events = selected.event ? [selected.event, ...this.events.filter(e => e.id !== selected.event!.id).slice(0, 4)] : this.events.slice(0, 5);
-    this.recap = false;
+    if (selected.trigger === 'recap') this.recap = false;
     const beat = await this.runner.run({ state: this.state, settings: { ...this.settings }, ...(this.frame ? { frame: this.frame } : {}), transcript, events, ...selected });
     if (beat) {
       if (selected.twist) this.twists = this.twists.filter(t => t.id !== selected.twist!.id);

@@ -1,0 +1,15 @@
+{
+  "label": "SIMULATED TWITCH PAYLOADS — NOT LIVE TRAFFIC",
+  "schemaSources": ["https://dev.twitch.tv/docs/chat/irc", "https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/"],
+  "irc": [
+    "@id=vote-a;user-id=1;display-name=FixtureOne :one!one@one.tmi.twitch.tv PRIVMSG #fixture :!genre heist",
+    "@id=vote-b;user-id=2;display-name=FixtureTwo :two!two@two.tmi.twitch.tv PRIVMSG #fixture :!genre noir",
+    "@id=vote-c;user-id=3;display-name=FixtureThree :three!three@three.tmi.twitch.tv PRIVMSG #fixture :!genre heist",
+    "@id=twist-copy-one;source-id=twist-original;user-id=4;display-name=PlotFriend :friend!friend@friend.tmi.twitch.tv PRIVMSG #fixture :!twist The cat owned the red door.",
+    "@id=twist-copy-two;source-id=twist-original;user-id=4;display-name=PlotFriend :friend!friend@friend.tmi.twitch.tv PRIVMSG #fixture :!twist The cat owned the red door."
+  ],
+  "follow": {
+    "metadata": {"message_type": "notification", "message_id": "fixture-follow", "subscription_type": "channel.follow"},
+    "payload": {"subscription": {"type": "channel.follow", "version": "2"}, "event": {"user_id": "5", "user_name": "FixtureFollower", "user_login": "fixturefollower", "broadcaster_user_id": "7"}}
+  }
+}

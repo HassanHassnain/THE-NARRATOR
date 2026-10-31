@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
 import type { Beat, Genre, Narration, StoryState, Twist } from '../../shared/protocol.js';
-export function createStory(protagonist = 'Streamer', genre: Genre = 'noir', streamId = randomUUID()): StoryState {
+export function createStory(protagonist = 'Streamer', genre: Genre = 'noir', streamId: string = randomUUID()): StoryState {
   return { streamId, protagonist, genre, cast: {}, canon: [], summary: '', recentLines: [], chapterTitle: '', beatCount: 0 };
 }
 export function applyBeat(state: StoryState, beat: Beat, narration: Narration, twist?: Twist): void {

@@ -141,6 +141,11 @@ describe('prompt and model boundaries', () => {
     const result = await new LocalWriter({ complete }).write({ system: 'system', user: '{}', model: 'gemma3:4b' }, new AbortController().signal);
     expect(result.value.line).toBe('Hassan reached the locked red door.'); expect(complete).toHaveBeenCalledTimes(2);
   });
+  it('validates two-sentence recap output before voice', async () => {
+    const complete=vi.fn().mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door.',castUpdates:[]})).mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door. The key remained missing.',castUpdates:[]}));
+    const result=await new LocalWriter({complete}).write({system:'system',user:'{}',model:'gemma3:4b',recap:true},new AbortController().signal);
+    expect(result.value.line).toContain('The key remained missing.');expect(complete).toHaveBeenCalledTimes(2);
+  });
   it('caps captions and fails closed on unsafe/invalid viewer screen output', async () => {
     const client: ChatClient = { complete: vi.fn().mockResolvedValue('word '.repeat(26)) };
     await expect(new LocalEyes(client).caption(Buffer.from('jpg'), new AbortController().signal)).rejects.toThrow('25 words');

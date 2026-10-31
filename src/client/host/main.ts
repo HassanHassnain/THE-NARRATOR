@@ -1,6 +1,6 @@
 import './style.css';
 import { connect } from '../socket';
-import type { PublicState, Settings } from '../../shared/protocol';
+import type { PublicState, Settings, ClientMessage } from '../../shared/protocol';
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const input = (id: string) => el<HTMLInputElement>(id);
 const button = (id: string) => el<HTMLButtonElement>(id);
@@ -11,7 +11,7 @@ const socket = connect('host', message => {
 }, open => { el('connection').textContent = open ? 'Control room connected' : 'Reconnecting…'; });
 const settings = (value: Partial<Settings>) => socket.send({ type: 'settings', settings: value });
 function render(s: PublicState) {
-  const checks: [string, boolean][] = [['Ollama running', s.health.ollama], ['Models installed', s.health.ollama && !s.health.missing.length], ['Voice ready', s.voice.ready], ['Screen shared', !!capture && capture.active], ['Microphone on', s.mic], ['Overlay connected', s.overlays > 0]];
+  const checks: [string, boolean][] = [['Ollama running', s.health.ollama], ['Models installed', s.health.ollama && !s.health.missing.length], ['Voice ready', s.voice.ready], ['Screen shared', !!capture && capture.active], ['Microphone on', s.mic], ['Overlay connected', s.overlays > 0], ['Twitch connected', s.twitch.chatConnected]];
   el('checklist').replaceChildren(...checks.map(([label, ready]) => { const li = document.createElement('li'); li.className = ready ? 'ready' : 'pending'; li.textContent = `${ready ? '✓' : '○'} ${label}`; return li; }));
   el('fixes').textContent = [...s.health.fixes, s.voice.error ?? ''].filter(Boolean).join('\n');
   el<HTMLAnchorElement>('overlay').href = `/overlay?key=${encodeURIComponent(s.overlayKey)}`;
@@ -20,7 +20,22 @@ function render(s: PublicState) {
   el('cadenceValue').textContent = `${s.settings.cadenceSeconds} s`; el('spiceValue').textContent = String(s.settings.spice);
   input('light').checked = s.settings.lightMode;
   button('running').textContent = s.settings.running ? 'Stop narrator' : 'Start narrator';
+  button('running').disabled = !s.settings.running && (!s.voice.ready || !s.health.ollama || s.health.missing.length > 0);
   button('mute').textContent = s.settings.muted ? 'Unmute (M)' : 'Mute (M)'; button('mute').setAttribute('aria-pressed', String(s.settings.muted));
+  const t = s.twitch;
+  el('twitchStatus').textContent = `${t.channel ? '#' + t.channel : 'No channel'} · chat ${t.chatConnected ? 'connected' : 'disconnected'} · events ${t.eventsConnected ? 'connected' : 'disconnected'}${t.user ? ' · authorized as ' + t.user.login : ''}`;
+  el('twitchSetup').textContent = t.clientConfigured ? 'Authorize to receive follows, subscriptions, cheers and raids on your channel.' : 'For events: set TWITCH_CLIENT_ID for a Public app in .env, restart, then Connect with Twitch. Anonymous chat needs no client ID.';
+  if (document.activeElement !== el('channel')) input('channel').value = t.channel;
+  el('device').hidden = !t.device; el('deviceCode').textContent = t.device?.userCode ?? '';
+  el<HTMLSelectElement>('twistMode').value = t.mode; input('modsOnly').checked = t.modsOnly;
+  el('acceptedTwists').textContent = `${t.accepted.length}/3 accepted twists waiting for a beat.`;
+  if (document.activeElement !== el('blocklist')) el<HTMLTextAreaElement>('blocklist').value = t.blocklist.join('\n');
+  el('pendingTwists').replaceChildren(...t.pending.map(twist => {
+    const li = document.createElement('li'); const text = document.createElement('span'); text.textContent = `@${twist.author}: ${twist.text} `;
+    const approve = document.createElement('button'); approve.textContent = 'Approve'; approve.onclick = () => twitch({ action: 'approve', id: twist.id });
+    const reject = document.createElement('button'); reject.textContent = 'Reject'; reject.onclick = () => twitch({ action: 'reject', id: twist.id }); li.append(text, approve, reject); return li;
+  }));
+  el('twitchNotices').replaceChildren(...t.notices.map(notice => { const li = document.createElement('li'); li.textContent = notice; return li; }));
   el('logs').replaceChildren(...s.logs.map(log => {
     const li = document.createElement('li'); li.className = log.status;
     const meta = document.createElement('small'); meta.textContent = `${new Date(log.at).toLocaleTimeString()} · ${log.trigger} · ${log.status}`;
@@ -97,3 +112,12 @@ button('mic').onclick = () => {
 };
 void fetch('/api/config').then(r => r.json()).then((c: { simulated: boolean }) => { el('simulated').hidden = !c.simulated; });
 window.addEventListener('pagehide', () => { stopCapture(); micWanted = false; recognition?.stop(); socket.close(); });
+
+function twitch(action: Omit<Extract<ClientMessage, { type: 'twitch' }>, 'type'>) { socket.send({ type: 'twitch', ...action }); }
+button('readChat').onclick = () => twitch({ action: 'chat', channel: input('channel').value });
+button('authTwitch').onclick = () => twitch({ action: 'auth' });
+button('stopChat').onclick = () => twitch({ action: 'stop' });
+button('clearTwists').onclick = () => twitch({ action: 'clear' });
+el<HTMLSelectElement>('twistMode').onchange = () => twitch({ action: 'mode', mode: el<HTMLSelectElement>('twistMode').value as 'approve' | 'auto', modsOnly: input('modsOnly').checked });
+input('modsOnly').onchange = () => twitch({ action: 'mode', modsOnly: input('modsOnly').checked });
+button('saveBlocklist').onclick = () => twitch({ action: 'blocklist', words: el<HTMLTextAreaElement>('blocklist').value.split('\n') });

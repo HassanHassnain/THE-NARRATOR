@@ -24,7 +24,7 @@ export interface BeatLog { at: number; status: 'spoken' | 'skipped'; engine?: 'k
 export interface Health { ollama: boolean; installed: string[]; missing: string[]; fixes: string[]; latencyMs: number; error?: string }
 export interface PublicState {
   settings: Settings; story: StoryState; health: Health; voice: { ready: boolean; engine: string; error?: string };
-  overlayKey: string; overlays: number; logs: BeatLog[]; frameAt: number; mic: boolean;
+  twitch: TwitchPublic; overlayKey: string; overlays: number; logs: BeatLog[]; frameAt: number; mic: boolean;
 }
 export type ServerMessage = { type: 'state'; state: PublicState } | { type: 'beat'; beat: Beat } | { type: 'stop' } | { type: 'notice'; message: string };
 export type ClientMessage =
@@ -33,4 +33,12 @@ export type ClientMessage =
   | { type: 'transcript'; text: string; at: number }
   | { type: 'mic'; active: boolean }
   | { type: 'skip' }
-  | { type: 'warm' };
+  | { type: 'warm' }
+  | { type: 'twitch'; action: 'chat' | 'auth' | 'stop' | 'approve' | 'reject' | 'clear' | 'mode' | 'blocklist'; channel?: string; id?: string; mode?: 'approve' | 'auto'; modsOnly?: boolean; words?: string[] };
+
+export interface TwitchPublic {
+  clientConfigured: boolean; channel: string; chatConnected: boolean; eventsConnected: boolean; authenticated: boolean;
+  mode: 'approve' | 'auto'; modsOnly: boolean; pending: Twist[]; accepted: Twist[];
+  blocklist: string[]; notices: string[]; device?: { userCode: string; uri: string; expiresAt: number };
+  user?: { id: string; login: string; displayName: string };
+}
