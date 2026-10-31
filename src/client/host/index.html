@@ -1,12 +1,21 @@
 <!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE NARRATOR — Host</title>
-</head>
-<body>
-  <main><h1>THE NARRATOR · Host</h1><p>Scaffold placeholder. Narration is not connected yet.</p></main>
-  <script type="module" src="./main.ts"></script>
-</body>
-</html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>THE NARRATOR · Host</title></head>
+<body><main>
+<header><div><p class="eyebrow">THE NARRATOR</p><h1>Control room</h1></div><p id="connection" role="status">Connecting…</p></header>
+<p id="simulated" hidden>SIMULATED AI — TEST MODE</p>
+<p id="notice" role="status" aria-live="polite">Share a window, enable your mic, then start the narrator.</p>
+<section aria-label="Setup"><h2>Get ready</h2><ul id="checklist"></ul><button id="warm">Load local models &amp; voice</button><pre id="fixes"></pre></section>
+<section class="workspace"><div>
+<h2>Your stream</h2><label>Protagonist <input id="protagonist" value="Streamer" maxlength="80"></label>
+<div class="row"><button id="capture">Share game window</button><button id="mic">Enable microphone</button></div>
+<video id="preview" muted autoplay playsinline aria-label="Shared window preview"></video>
+<label>Genre <select id="genre"><option>noir</option><option>nature</option><option>epic</option><option>sports</option><option>horror</option><option>heist</option></select></label>
+<label>Cadence <output id="cadenceValue">35 s</output><input id="cadence" type="range" min="15" max="90" value="35"></label>
+<label>Spice <output id="spiceValue">1</output><input id="spice" type="range" min="0" max="3" value="1"></label>
+<label class="check"><input id="light" type="checkbox"> Light mode · use one model</label>
+<div class="row"><button id="running" class="primary">Start narrator</button><button id="mute" class="large" aria-pressed="false">Mute (M)</button><button id="skip" class="large">Skip (S)</button></div>
+<p><a id="overlay" target="_blank" rel="noopener">Open overlay</a> · <a id="episode" target="_blank" rel="noopener">Open episode</a></p>
+<details><summary>Transcript fallback</summary><p>For browsers without speech recognition, type what you said. Include “narrator” for an immediate reply.</p><form id="transcriptForm"><input id="transcript" aria-label="Transcript" maxlength="2000" placeholder="Narrator, why did I miss that red door?"><button>Send transcript</button></form></details>
+<p id="speechStatus" aria-live="polite">Microphone off</p>
+</div><div class="log"><h2>Beat log</h2><p>Eyes / writer / voice / total · milliseconds</p><ol id="logs" aria-live="polite"></ol></div></section>
+</main><script type="module" src="./main.ts"></script></body></html>

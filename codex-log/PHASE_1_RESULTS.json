@@ -1,0 +1,2102 @@
+{
+  "label": "REAL LOCAL MODELS WITH SIMULATED FRAME AND TRANSCRIPTS",
+  "runs": [
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+      "rows": [
+        {
+          "at": 1793480795010,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the blue river, a detail of minimal consequence.",
+          "latency": {
+            "eyes": 3402,
+            "writer": 1791,
+            "tts": 960,
+            "total": 6163
+          },
+          "engine": "say",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480800379,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan observed the blue river, noting the low health indicator.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1834,
+            "tts": 3532,
+            "total": 5368
+          },
+          "engine": "kokoro",
+          "genre": "nature"
+        },
+        {
+          "at": 1793480807680,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, recalling his last potion, stared at the red door.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3634,
+            "tts": 3658,
+            "total": 7301
+          },
+          "engine": "kokoro",
+          "genre": "epic"
+        },
+        {
+          "at": 1793480812930,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan decided to move away from the red door, acknowledging the low health.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1903,
+            "tts": 3345,
+            "total": 5250
+          },
+          "engine": "kokoro",
+          "genre": "sports"
+        },
+        {
+          "at": 1793480818407,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the blue river, noting the low health indicator.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1827,
+            "tts": 3647,
+            "total": 5476
+          },
+          "engine": "kokoro",
+          "genre": "horror"
+        },
+        {
+          "at": 1793480825938,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, acknowledging low health, moved away from the red door.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2276,
+            "tts": 3464,
+            "total": 5742
+          },
+          "engine": "kokoro",
+          "genre": "heist"
+        }
+      ],
+      "beats": [
+        {
+          "id": "7a76108c-77b3-465a-a942-527d32ef0fc8",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480795010,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the blue river, a detail of minimal consequence.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 3402,
+            "writer": 1791,
+            "tts": 960,
+            "total": 6163
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/7a76108c-77b3-465a-a942-527d32ef0fc8.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/7a76108c-77b3-465a-a942-527d32ef0fc8.jpg",
+          "durationSeconds": 3.9467083333333335,
+          "engine": "say",
+          "lightMode": true
+        },
+        {
+          "id": "f5d90ad6-c922-480c-b73e-e7372c4bf460",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480800379,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan observed the blue river, noting the low health indicator.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1834,
+            "tts": 3532,
+            "total": 5368
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/f5d90ad6-c922-480c-b73e-e7372c4bf460.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/f5d90ad6-c922-480c-b73e-e7372c4bf460.jpg",
+          "durationSeconds": 4.7,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "95aa0ca8-dba9-46c1-af76-2a9e39d1bb04",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480807680,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, recalling his last potion, stared at the red door.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3634,
+            "tts": 3658,
+            "total": 7301
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/95aa0ca8-dba9-46c1-af76-2a9e39d1bb04.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/95aa0ca8-dba9-46c1-af76-2a9e39d1bb04.jpg",
+          "durationSeconds": 4.825,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "ee2a82b2-45f3-4705-9557-15c26419e1f8",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480812930,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan decided to move away from the red door, acknowledging the low health.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1903,
+            "tts": 3345,
+            "total": 5250
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/ee2a82b2-45f3-4705-9557-15c26419e1f8.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/ee2a82b2-45f3-4705-9557-15c26419e1f8.jpg",
+          "durationSeconds": 4.775,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "85f3ad76-e2ea-4430-997c-5cec2559bed3",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480818407,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the blue river, noting the low health indicator.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1827,
+            "tts": 3647,
+            "total": 5476
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/85f3ad76-e2ea-4430-997c-5cec2559bed3.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/85f3ad76-e2ea-4430-997c-5cec2559bed3.jpg",
+          "durationSeconds": 4.975,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "63ffcf36-1ed2-4551-9fab-2999012917c7",
+          "streamId": "1da9d8a8-6fc1-440e-87b1-cdba25f59c71",
+          "at": 1793480825938,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, acknowledging low health, moved away from the red door.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2276,
+            "tts": 3464,
+            "total": 5742
+          },
+          "audioUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/audio/63ffcf36-1ed2-4551-9fab-2999012917c7.wav",
+          "frameUrl": "/media/1da9d8a8-6fc1-440e-87b1-cdba25f59c71/frames/63ffcf36-1ed2-4551-9fab-2999012917c7.jpg",
+          "durationSeconds": 4.825,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+      "rows": [
+        {
+          "at": 1793478974201,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably poor choice, frankly.",
+          "latency": {
+            "eyes": 664,
+            "writer": 1902,
+            "tts": 4029,
+            "total": 6607
+          }
+        },
+        {
+          "at": 1793478980321,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan observed the blue river, a disheartening loss confirmed by the key.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2077,
+            "tts": 4040,
+            "total": 6119
+          }
+        },
+        {
+          "at": 1793478986386,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, considering the depleted state, chose the red door deliberately.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1853,
+            "tts": 4203,
+            "total": 6068
+          }
+        },
+        {
+          "at": 1793478991947,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, defeated by the red door, reluctantly prepared for another attempt.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1903,
+            "tts": 3652,
+            "total": 5557
+          }
+        },
+        {
+          "at": 1793478999178,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan examined the blue river, confirming his dwindling health.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3678,
+            "tts": 3552,
+            "total": 7231
+          }
+        },
+        {
+          "at": 1793479007369,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan decided the blue river offered no immediate tactical advantage, instead.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1849,
+            "tts": 4659,
+            "total": 6512
+          }
+        }
+      ],
+      "beats": [
+        {
+          "id": "fef3e9ea-473a-4179-a60a-957a211731e7",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793478974201,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably poor choice, frankly.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 664,
+            "writer": 1902,
+            "tts": 4029,
+            "total": 6607
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/fef3e9ea-473a-4179-a60a-957a211731e7.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/fef3e9ea-473a-4179-a60a-957a211731e7.jpg",
+          "durationSeconds": 5.525,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "1e02b081-4619-4673-ad12-557c6c41eeaf",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793478980321,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan observed the blue river, a disheartening loss confirmed by the key.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2077,
+            "tts": 4040,
+            "total": 6119
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/1e02b081-4619-4673-ad12-557c6c41eeaf.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/1e02b081-4619-4673-ad12-557c6c41eeaf.jpg",
+          "durationSeconds": 5.525,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "6f9120c7-5ff3-45f4-a87c-550bd43cbd63",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793478986386,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, considering the depleted state, chose the red door deliberately.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1853,
+            "tts": 4203,
+            "total": 6068
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/6f9120c7-5ff3-45f4-a87c-550bd43cbd63.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/6f9120c7-5ff3-45f4-a87c-550bd43cbd63.jpg",
+          "durationSeconds": 5.7,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "66a05c81-efc1-446d-8381-043c81aa126d",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793478991947,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, defeated by the red door, reluctantly prepared for another attempt.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1903,
+            "tts": 3652,
+            "total": 5557
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/66a05c81-efc1-446d-8381-043c81aa126d.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/66a05c81-efc1-446d-8381-043c81aa126d.jpg",
+          "durationSeconds": 4.9,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "011985b0-013d-4811-a71d-a4223762b5e8",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793478999178,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan examined the blue river, confirming his dwindling health.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3678,
+            "tts": 3552,
+            "total": 7231
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/011985b0-013d-4811-a71d-a4223762b5e8.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/011985b0-013d-4811-a71d-a4223762b5e8.jpg",
+          "durationSeconds": 4.875,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "607821ee-5a5e-4a97-8aed-f30610c4375b",
+          "streamId": "3a662877-4a86-4a21-98a9-bead2a197f85",
+          "at": 1793479007369,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan decided the blue river offered no immediate tactical advantage, instead.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1849,
+            "tts": 4659,
+            "total": 6512
+          },
+          "audioUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/audio/607821ee-5a5e-4a97-8aed-f30610c4375b.wav",
+          "frameUrl": "/media/3a662877-4a86-4a21-98a9-bead2a197f85/frames/607821ee-5a5e-4a97-8aed-f30610c4375b.jpg",
+          "durationSeconds": 6.45,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "545628b2-4687-42a6-a733-2ede9e62a0c8",
+      "rows": [
+        {
+          "at": 1793478572756,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably futile endeavor.",
+          "latency": {
+            "eyes": 701,
+            "writer": 1813,
+            "tts": 3846,
+            "total": 6372
+          }
+        },
+        {
+          "at": 1793478577757,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan contemplated the blue river and his now-lost key.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1832,
+            "tts": 3158,
+            "total": 4998
+          }
+        },
+        {
+          "at": 1793478579521,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably futile endeavor.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1762,
+            "tts": 0,
+            "total": 1762
+          },
+          "reason": "Repeated recent line; skipped"
+        },
+        {
+          "at": 1793478581370,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably futile endeavor.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1848,
+            "tts": 0,
+            "total": 1848
+          },
+          "reason": "Repeated recent line; skipped"
+        }
+      ],
+      "beats": [
+        {
+          "id": "223bc645-7bd4-4f70-862f-c31c51f2c1b6",
+          "streamId": "545628b2-4687-42a6-a733-2ede9e62a0c8",
+          "at": 1793478572756,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan considered the red door, a predictably futile endeavor.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 701,
+            "writer": 1813,
+            "tts": 3846,
+            "total": 6372
+          },
+          "audioUrl": "/media/545628b2-4687-42a6-a733-2ede9e62a0c8/audio/223bc645-7bd4-4f70-862f-c31c51f2c1b6.wav",
+          "frameUrl": "/media/545628b2-4687-42a6-a733-2ede9e62a0c8/frames/223bc645-7bd4-4f70-862f-c31c51f2c1b6.jpg",
+          "durationSeconds": 5.15,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "95c906b3-d6bb-48a3-b354-5fa121485524",
+          "streamId": "545628b2-4687-42a6-a733-2ede9e62a0c8",
+          "at": 1793478577757,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan contemplated the blue river and his now-lost key.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1832,
+            "tts": 3158,
+            "total": 4998
+          },
+          "audioUrl": "/media/545628b2-4687-42a6-a733-2ede9e62a0c8/audio/95c906b3-d6bb-48a3-b354-5fa121485524.wav",
+          "frameUrl": "/media/545628b2-4687-42a6-a733-2ede9e62a0c8/frames/95c906b3-d6bb-48a3-b354-5fa121485524.jpg",
+          "durationSeconds": 4.35,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "9ab80caa-5757-4e91-a00a-32f9efb8fbe0",
+      "rows": [
+        {
+          "at": 1793477773869,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "The health bar stubbornly displayed 20/100. Hassan frowned, adjusting his spectacles.",
+          "latency": {
+            "eyes": 5348,
+            "writer": 3327,
+            "tts": 0,
+            "total": 8682
+          },
+          "reason": "Writer referenced an unknown twist"
+        },
+        {
+          "at": 1793477783873,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan meticulously arranged the river stones around the base of the locked door. The \"HEALTH: 20/100\" caption seemed particularly relevant.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3847,
+            "tts": 6153,
+            "total": 10002
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793477793874,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10001,
+            "tts": 0,
+            "total": 10001
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793477796227,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan glanced at the screen, noting 'HEALTH: 20/100'.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2351,
+            "tts": 0,
+            "total": 2351
+          },
+          "reason": "Writer referenced an unknown twist"
+        },
+        {
+          "at": 1793477804306,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan glanced at the screen. The subtitle read \"HEALTH: 20/100\".",
+          "latency": {
+            "eyes": 0,
+            "writer": 2440,
+            "tts": 5637,
+            "total": 8080
+          }
+        },
+        {
+          "at": 1793477809188,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan considered the door, noting the health deficit.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1971,
+            "tts": 2907,
+            "total": 4881
+          }
+        }
+      ],
+      "beats": [
+        {
+          "id": "96805129-d979-4d59-bb1b-973453638bae",
+          "streamId": "9ab80caa-5757-4e91-a00a-32f9efb8fbe0",
+          "at": 1793477804306,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan glanced at the screen. The subtitle read \"HEALTH: 20/100\".",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2440,
+            "tts": 5637,
+            "total": 8080
+          },
+          "audioUrl": "/media/9ab80caa-5757-4e91-a00a-32f9efb8fbe0/audio/96805129-d979-4d59-bb1b-973453638bae.wav",
+          "frameUrl": "/media/9ab80caa-5757-4e91-a00a-32f9efb8fbe0/frames/96805129-d979-4d59-bb1b-973453638bae.jpg",
+          "durationSeconds": 6.1,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "b0c27455-1c5f-4356-a0f8-39da346240a9",
+          "streamId": "9ab80caa-5757-4e91-a00a-32f9efb8fbe0",
+          "at": 1793477809188,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "A grey figure stands near a blue river. A red, locked door is visible. Text reads \"HEALTH: 20/100\".",
+          "line": "Hassan considered the door, noting the health deficit.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1971,
+            "tts": 2907,
+            "total": 4881
+          },
+          "audioUrl": "/media/9ab80caa-5757-4e91-a00a-32f9efb8fbe0/audio/b0c27455-1c5f-4356-a0f8-39da346240a9.wav",
+          "frameUrl": "/media/9ab80caa-5757-4e91-a00a-32f9efb8fbe0/frames/b0c27455-1c5f-4356-a0f8-39da346240a9.jpg",
+          "durationSeconds": 4.025,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "ca976c21-aa2e-4f1e-ba45-d0979eff81eb",
+      "rows": [
+        {
+          "at": 1793477907710,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "The transcript indicated 'easy jump,' but the river disagreed vehemently.",
+          "latency": {
+            "eyes": 3730,
+            "writer": 2337,
+            "tts": 3929,
+            "total": 10003
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793477917153,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Beside the blue river, Hassan meticulously arranged three potions, undisturbed.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2523,
+            "tts": 6917,
+            "total": 9444
+          }
+        },
+        {
+          "at": 1793477927160,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Beside the blue river, Hassan meticulously arranged three potions, undisturbed, yet low health persisted.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2996,
+            "tts": 6996,
+            "total": 10003
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793477935079,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan cautiously approached the red door, examining its low health indicator.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2193,
+            "tts": 5722,
+            "total": 7920
+          }
+        },
+        {
+          "at": 1793477941353,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "The narrator’s voice echoed, ‘I have twenty health and a locked red door.’",
+          "latency": {
+            "eyes": 0,
+            "writer": 2260,
+            "tts": 4004,
+            "total": 6273
+          }
+        },
+        {
+          "at": 1793477947760,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan’s courage seemed singularly focused on a malfunctioning health display.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2087,
+            "tts": 4314,
+            "total": 6403
+          }
+        }
+      ],
+      "beats": [
+        {
+          "id": "f5820cb5-1943-490c-a4f5-fcada88e6137",
+          "streamId": "ca976c21-aa2e-4f1e-ba45-d0979eff81eb",
+          "at": 1793477917153,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Beside the blue river, Hassan meticulously arranged three potions, undisturbed.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2523,
+            "tts": 6917,
+            "total": 9444
+          },
+          "audioUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/audio/f5820cb5-1943-490c-a4f5-fcada88e6137.wav",
+          "frameUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/frames/f5820cb5-1943-490c-a4f5-fcada88e6137.jpg",
+          "durationSeconds": 6.25,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "33908b07-b2dd-4482-be8c-e133cb622bc0",
+          "streamId": "ca976c21-aa2e-4f1e-ba45-d0979eff81eb",
+          "at": 1793477935079,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan cautiously approached the red door, examining its low health indicator.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2193,
+            "tts": 5722,
+            "total": 7920
+          },
+          "audioUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/audio/33908b07-b2dd-4482-be8c-e133cb622bc0.wav",
+          "frameUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/frames/33908b07-b2dd-4482-be8c-e133cb622bc0.jpg",
+          "durationSeconds": 5.1,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "1fb17783-096c-4659-a85c-0bc11ac54afb",
+          "streamId": "ca976c21-aa2e-4f1e-ba45-d0979eff81eb",
+          "at": 1793477941353,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "The narrator’s voice echoed, ‘I have twenty health and a locked red door.’",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2260,
+            "tts": 4004,
+            "total": 6273
+          },
+          "audioUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/audio/1fb17783-096c-4659-a85c-0bc11ac54afb.wav",
+          "frameUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/frames/1fb17783-096c-4659-a85c-0bc11ac54afb.jpg",
+          "durationSeconds": 5.3,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "4c68bc65-b9f4-4a6a-baa6-6f719008cd92",
+          "streamId": "ca976c21-aa2e-4f1e-ba45-d0979eff81eb",
+          "at": 1793477947760,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan’s courage seemed singularly focused on a malfunctioning health display.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2087,
+            "tts": 4314,
+            "total": 6403
+          },
+          "audioUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/audio/4c68bc65-b9f4-4a6a-baa6-6f719008cd92.wav",
+          "frameUrl": "/media/ca976c21-aa2e-4f1e-ba45-d0979eff81eb/frames/4c68bc65-b9f4-4a6a-baa6-6f719008cd92.jpg",
+          "durationSeconds": 5.825,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "d7a27d50-653e-4652-8a36-8aea3e6f881b",
+      "rows": [
+        {
+          "at": 1793478722408,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan sighed, meticulously noting the failed attempt in his log.",
+          "latency": {
+            "eyes": 739,
+            "writer": 1484,
+            "tts": 4602,
+            "total": 6837
+          }
+        },
+        {
+          "at": 1793478727939,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan observed the blue river, a disheartened expression on his face.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1639,
+            "tts": 3887,
+            "total": 5528
+          }
+        },
+        {
+          "at": 1793478733972,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan meticulously noted the failed attempt, a small, precise observation.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1560,
+            "tts": 4470,
+            "total": 6034
+          }
+        },
+        {
+          "at": 1793478739023,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan carefully examined the lock mechanism, seeking a subtle clue.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1559,
+            "tts": 3483,
+            "total": 5048
+          }
+        },
+        {
+          "at": 1793478749028,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10003,
+            "tts": 0,
+            "total": 10003
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793478759033,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan, after the alarm, assessed the situation with detached calm.",
+          "latency": {
+            "eyes": 0,
+            "writer": 6194,
+            "tts": 3803,
+            "total": 10003
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        }
+      ],
+      "beats": [
+        {
+          "id": "dbe04d95-f900-4310-a3cf-b081237b62f3",
+          "streamId": "d7a27d50-653e-4652-8a36-8aea3e6f881b",
+          "at": 1793478722408,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan sighed, meticulously noting the failed attempt in his log.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 739,
+            "writer": 1484,
+            "tts": 4602,
+            "total": 6837
+          },
+          "audioUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/audio/dbe04d95-f900-4310-a3cf-b081237b62f3.wav",
+          "frameUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/frames/dbe04d95-f900-4310-a3cf-b081237b62f3.jpg",
+          "durationSeconds": 5.45,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "ae6dd42d-87d0-4e20-9230-a008c0f4f68e",
+          "streamId": "d7a27d50-653e-4652-8a36-8aea3e6f881b",
+          "at": 1793478727939,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan observed the blue river, a disheartened expression on his face.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1639,
+            "tts": 3887,
+            "total": 5528
+          },
+          "audioUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/audio/ae6dd42d-87d0-4e20-9230-a008c0f4f68e.wav",
+          "frameUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/frames/ae6dd42d-87d0-4e20-9230-a008c0f4f68e.jpg",
+          "durationSeconds": 5.1,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "203819ba-8842-4c3f-814c-cf132cba1be9",
+          "streamId": "d7a27d50-653e-4652-8a36-8aea3e6f881b",
+          "at": 1793478733972,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan meticulously noted the failed attempt, a small, precise observation.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1560,
+            "tts": 4470,
+            "total": 6034
+          },
+          "audioUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/audio/203819ba-8842-4c3f-814c-cf132cba1be9.wav",
+          "frameUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/frames/203819ba-8842-4c3f-814c-cf132cba1be9.jpg",
+          "durationSeconds": 6.425,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "a8a5aab9-6710-4406-8db9-52b7a53fd30f",
+          "streamId": "d7a27d50-653e-4652-8a36-8aea3e6f881b",
+          "at": 1793478739023,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan carefully examined the lock mechanism, seeking a subtle clue.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1559,
+            "tts": 3483,
+            "total": 5048
+          },
+          "audioUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/audio/a8a5aab9-6710-4406-8db9-52b7a53fd30f.wav",
+          "frameUrl": "/media/d7a27d50-653e-4652-8a36-8aea3e6f881b/frames/a8a5aab9-6710-4406-8db9-52b7a53fd30f.jpg",
+          "durationSeconds": 4.675,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "df406b26-d15f-4387-8ad0-c8bf8ff99851",
+      "rows": [
+        {
+          "at": 1793478174565,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stared at the red door, a familiar frustration etched on his face.",
+          "latency": {
+            "eyes": 699,
+            "writer": 2284,
+            "tts": 4348,
+            "total": 7342
+          }
+        },
+        {
+          "at": 1793478181572,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan meticulously arranged the blue river stones, observing their subtle variations.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1960,
+            "tts": 5042,
+            "total": 7004
+          }
+        },
+        {
+          "at": 1793478187309,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan noted the low health reading beside the red door’s surface.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1993,
+            "tts": 3730,
+            "total": 5738
+          }
+        },
+        {
+          "at": 1793478192727,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan’s meticulous arrangement of the blue river stones seemed futile.",
+          "latency": {
+            "eyes": 0,
+            "writer": 1989,
+            "tts": 3424,
+            "total": 5418
+          }
+        },
+        {
+          "at": 1793478202734,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10003,
+            "tts": 0,
+            "total": 10003
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793478212742,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10004,
+            "tts": 0,
+            "total": 10004
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        }
+      ],
+      "beats": [
+        {
+          "id": "0b19d71a-49bc-4503-a001-05a4ab8f47b5",
+          "streamId": "df406b26-d15f-4387-8ad0-c8bf8ff99851",
+          "at": 1793478174565,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stared at the red door, a familiar frustration etched on his face.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 699,
+            "writer": 2284,
+            "tts": 4348,
+            "total": 7342
+          },
+          "audioUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/audio/0b19d71a-49bc-4503-a001-05a4ab8f47b5.wav",
+          "frameUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/frames/0b19d71a-49bc-4503-a001-05a4ab8f47b5.jpg",
+          "durationSeconds": 5.775,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "0877acbf-b5aa-48ce-99fe-b0e0339451d7",
+          "streamId": "df406b26-d15f-4387-8ad0-c8bf8ff99851",
+          "at": 1793478181572,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan meticulously arranged the blue river stones, observing their subtle variations.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1960,
+            "tts": 5042,
+            "total": 7004
+          },
+          "audioUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/audio/0877acbf-b5aa-48ce-99fe-b0e0339451d7.wav",
+          "frameUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/frames/0877acbf-b5aa-48ce-99fe-b0e0339451d7.jpg",
+          "durationSeconds": 6.525,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "86214ea0-e3fb-4783-8a63-f49ab8db76d8",
+          "streamId": "df406b26-d15f-4387-8ad0-c8bf8ff99851",
+          "at": 1793478187309,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan noted the low health reading beside the red door’s surface.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1993,
+            "tts": 3730,
+            "total": 5738
+          },
+          "audioUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/audio/86214ea0-e3fb-4783-8a63-f49ab8db76d8.wav",
+          "frameUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/frames/86214ea0-e3fb-4783-8a63-f49ab8db76d8.jpg",
+          "durationSeconds": 5.225,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "90090df4-0658-40b8-8325-150913bbb365",
+          "streamId": "df406b26-d15f-4387-8ad0-c8bf8ff99851",
+          "at": 1793478192727,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan’s meticulous arrangement of the blue river stones seemed futile.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 1989,
+            "tts": 3424,
+            "total": 5418
+          },
+          "audioUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/audio/90090df4-0658-40b8-8325-150913bbb365.wav",
+          "frameUrl": "/media/df406b26-d15f-4387-8ad0-c8bf8ff99851/frames/90090df4-0658-40b8-8325-150913bbb365.jpg",
+          "durationSeconds": 4.625,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "light",
+      "model": "gemma3:4b",
+      "streamId": "fb2a4826-02bf-48b0-ba52-518eec0ab586",
+      "rows": [
+        {
+          "at": 1793478459225,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan considered the locked red door, a familiar frustration evident.",
+          "latency": {
+            "eyes": 645,
+            "writer": 2249,
+            "tts": 4128,
+            "total": 7033
+          }
+        },
+        {
+          "at": 1793478465998,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan, exhibiting a concerningly low health reading, returned to the red door.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2434,
+            "tts": 4327,
+            "total": 6769
+          }
+        },
+        {
+          "at": 1793478472034,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan examined the locked red door, accepting the lack of a key.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2300,
+            "tts": 3733,
+            "total": 6038
+          }
+        },
+        {
+          "at": 1793478474331,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan considered the locked red door, a familiar frustration evident.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2292,
+            "tts": 0,
+            "total": 2293
+          },
+          "reason": "Repeated recent line; skipped"
+        },
+        {
+          "at": 1793478476896,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan considered the locked red door, a familiar frustration evident.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2563,
+            "tts": 0,
+            "total": 2564
+          },
+          "reason": "Repeated recent line; skipped"
+        }
+      ],
+      "beats": [
+        {
+          "id": "c18bea42-f1af-441f-bbd2-e67a2eae3e26",
+          "streamId": "fb2a4826-02bf-48b0-ba52-518eec0ab586",
+          "at": 1793478459225,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan considered the locked red door, a familiar frustration evident.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 645,
+            "writer": 2249,
+            "tts": 4128,
+            "total": 7033
+          },
+          "audioUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/audio/c18bea42-f1af-441f-bbd2-e67a2eae3e26.wav",
+          "frameUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/frames/c18bea42-f1af-441f-bbd2-e67a2eae3e26.jpg",
+          "durationSeconds": 5.75,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "336c3e6f-07e5-4eda-af71-b209456e7a4a",
+          "streamId": "fb2a4826-02bf-48b0-ba52-518eec0ab586",
+          "at": 1793478465998,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan, exhibiting a concerningly low health reading, returned to the red door.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2434,
+            "tts": 4327,
+            "total": 6769
+          },
+          "audioUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/audio/336c3e6f-07e5-4eda-af71-b209456e7a4a.wav",
+          "frameUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/frames/336c3e6f-07e5-4eda-af71-b209456e7a4a.jpg",
+          "durationSeconds": 5.875,
+          "engine": "kokoro",
+          "lightMode": true
+        },
+        {
+          "id": "84eebec4-90ee-4fe9-869d-d1aa244af860",
+          "streamId": "fb2a4826-02bf-48b0-ba52-518eec0ab586",
+          "at": 1793478472034,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: locked red door, low health, key missing.",
+          "line": "Hassan examined the locked red door, accepting the lack of a key.",
+          "chapterTitle": "",
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2300,
+            "tts": 3733,
+            "total": 6038
+          },
+          "audioUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/audio/84eebec4-90ee-4fe9-869d-d1aa244af860.wav",
+          "frameUrl": "/media/fb2a4826-02bf-48b0-ba52-518eec0ab586/frames/84eebec4-90ee-4fe9-869d-d1aa244af860.jpg",
+          "durationSeconds": 5.275,
+          "engine": "kokoro",
+          "lightMode": true
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+      "rows": [
+        {
+          "at": 1793480517416,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6285,
+            "writer": 3718,
+            "tts": 0,
+            "total": 10005
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480528149,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, once again, tripped over the red door, his health dwindling, and the blue river mocking his ineptitude.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3159,
+            "tts": 2884,
+            "total": 6050
+          },
+          "engine": "say",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480532324,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, having once again slipped on the crimson threshold, noted the river's blue shimmer without attempting to cross it.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3202,
+            "tts": 971,
+            "total": 4174
+          },
+          "engine": "say",
+          "genre": "nature"
+        },
+        {
+          "at": 1793480538325,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan staggered past the red door, his health low, before the river glimmered.",
+          "latency": {
+            "eyes": 0,
+            "writer": 5029,
+            "tts": 970,
+            "total": 6000
+          },
+          "engine": "say",
+          "genre": "epic"
+        },
+        {
+          "at": 1793480542338,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stumbled once more at the crimson threshold, health flagging, while the blue river shimmered indifferently.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3046,
+            "tts": 966,
+            "total": 4013
+          },
+          "engine": "say",
+          "genre": "sports"
+        },
+        {
+          "at": 1793480549323,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stumbled over the red door, his health flagging beside the silent blue river.",
+          "latency": {
+            "eyes": 0,
+            "writer": 6001,
+            "tts": 982,
+            "total": 6985
+          },
+          "engine": "say",
+          "genre": "horror"
+        },
+        {
+          "at": 1793480556306,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, still attempting to hide behind the red door, set off the alarm, his health flagging beside the blue river, a scene that would have pleased no",
+          "latency": {
+            "eyes": 0,
+            "writer": 3880,
+            "tts": 994,
+            "total": 4876
+          },
+          "engine": "say",
+          "genre": "heist"
+        }
+      ],
+      "beats": [
+        {
+          "id": "1606a516-71fc-4299-b74f-c68b7efd2440",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480528149,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, once again, tripped over the red door, his health dwindling, and the blue river mocking his ineptitude.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3159,
+            "tts": 2884,
+            "total": 6050
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/1606a516-71fc-4299-b74f-c68b7efd2440.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/1606a516-71fc-4299-b74f-c68b7efd2440.jpg",
+          "durationSeconds": 6.7215,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "8839a639-5e78-4fb2-a8b9-5da4cb7602b1",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480532324,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, having once again slipped on the crimson threshold, noted the river's blue shimmer without attempting to cross it.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3202,
+            "tts": 971,
+            "total": 4174
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/8839a639-5e78-4fb2-a8b9-5da4cb7602b1.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/8839a639-5e78-4fb2-a8b9-5da4cb7602b1.jpg",
+          "durationSeconds": 6.826,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "fcc2ff31-b05c-4630-a64a-8d0a6c008b6f",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480538325,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan staggered past the red door, his health low, before the river glimmered.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 5029,
+            "tts": 970,
+            "total": 6000
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/fcc2ff31-b05c-4630-a64a-8d0a6c008b6f.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/fcc2ff31-b05c-4630-a64a-8d0a6c008b6f.jpg",
+          "durationSeconds": 4.596875,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "0afd0882-e4ce-4931-a553-52bf6c015da9",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480542338,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stumbled once more at the crimson threshold, health flagging, while the blue river shimmered indifferently.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3046,
+            "tts": 966,
+            "total": 4013
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/0afd0882-e4ce-4931-a553-52bf6c015da9.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/0afd0882-e4ce-4931-a553-52bf6c015da9.jpg",
+          "durationSeconds": 6.015,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "792a08a1-778d-4693-9984-a7a6d7856aad",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480549323,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan stumbled over the red door, his health flagging beside the silent blue river.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 6001,
+            "tts": 982,
+            "total": 6985
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/792a08a1-778d-4693-9984-a7a6d7856aad.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/792a08a1-778d-4693-9984-a7a6d7856aad.jpg",
+          "durationSeconds": 5.105291666666667,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "6d6d1d1b-0100-4dc1-91cd-6459c897dd1d",
+          "streamId": "58a3e33d-56fb-4aee-95ca-f3935c0f2fcb",
+          "at": 1793480556306,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan, still attempting to hide behind the red door, set off the alarm, his health flagging beside the blue river, a scene that would have pleased no",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3880,
+            "tts": 994,
+            "total": 4876
+          },
+          "audioUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/audio/6d6d1d1b-0100-4dc1-91cd-6459c897dd1d.wav",
+          "frameUrl": "/media/58a3e33d-56fb-4aee-95ca-f3935c0f2fcb/frames/6d6d1d1b-0100-4dc1-91cd-6459c897dd1d.jpg",
+          "durationSeconds": 8.43975,
+          "engine": "say",
+          "lightMode": false
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+      "rows": [
+        {
+          "at": 1793480738190,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6966,
+            "writer": 3040,
+            "tts": 0,
+            "total": 10011
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480751628,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan examined the red door, knowing his twenty health would not suffice.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2764,
+            "tts": 1329,
+            "total": 4107
+          },
+          "engine": "say",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480755306,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, knowing his low health would not suffice.",
+          "latency": {
+            "eyes": 0,
+            "writer": 2733,
+            "tts": 940,
+            "total": 3676
+          },
+          "engine": "say",
+          "genre": "nature"
+        },
+        {
+          "at": 1793480761691,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, despite his meager health.",
+          "latency": {
+            "eyes": 0,
+            "writer": 5201,
+            "tts": 1182,
+            "total": 6385
+          },
+          "engine": "say",
+          "genre": "epic"
+        },
+        {
+          "at": 1793480767626,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan forced the red door open, ignoring his dwindling health.",
+          "latency": {
+            "eyes": 0,
+            "writer": 4952,
+            "tts": 980,
+            "total": 5934
+          },
+          "engine": "say",
+          "genre": "sports"
+        },
+        {
+          "at": 1793480772254,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 4626,
+            "tts": 0,
+            "total": 4626
+          },
+          "reason": "Invalid model JSON twice: Repeated recent line. Use the latest spoken words and a different concrete detail.",
+          "genre": "horror"
+        },
+        {
+          "at": 1793480777175,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, breath shallow, eyeing the blue river.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3921,
+            "tts": 995,
+            "total": 4918
+          },
+          "engine": "say",
+          "genre": "horror"
+        },
+        {
+          "at": 1793480783563,
+          "status": "spoken",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, ignoring his low health, and stared at the blue river.",
+          "latency": {
+            "eyes": 0,
+            "writer": 3459,
+            "tts": 983,
+            "total": 4445
+          },
+          "engine": "say",
+          "genre": "heist"
+        }
+      ],
+      "beats": [
+        {
+          "id": "d27186b8-d8db-4601-879e-e74e26852084",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480751628,
+          "trigger": "talk-back",
+          "genre": "noir",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan examined the red door, knowing his twenty health would not suffice.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2764,
+            "tts": 1329,
+            "total": 4107
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/d27186b8-d8db-4601-879e-e74e26852084.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/d27186b8-d8db-4601-879e-e74e26852084.jpg",
+          "durationSeconds": 4.178916666666667,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "4414da31-3790-4836-93fd-45b3775d7ca7",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480755306,
+          "trigger": "talk-back",
+          "genre": "nature",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, knowing his low health would not suffice.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 2733,
+            "tts": 940,
+            "total": 3676
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/4414da31-3790-4836-93fd-45b3775d7ca7.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/4414da31-3790-4836-93fd-45b3775d7ca7.jpg",
+          "durationSeconds": 3.807375,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "aa99ca25-9a8d-4b2f-9be6-a13e657cb3c0",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480761691,
+          "trigger": "talk-back",
+          "genre": "epic",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, despite his meager health.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 5201,
+            "tts": 1182,
+            "total": 6385
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/aa99ca25-9a8d-4b2f-9be6-a13e657cb3c0.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/aa99ca25-9a8d-4b2f-9be6-a13e657cb3c0.jpg",
+          "durationSeconds": 3.0295,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "b3a78a3a-c48b-432b-98a4-ae8911e50e61",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480767626,
+          "trigger": "talk-back",
+          "genre": "sports",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan forced the red door open, ignoring his dwindling health.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 4952,
+            "tts": 980,
+            "total": 5934
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/b3a78a3a-c48b-432b-98a4-ae8911e50e61.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/b3a78a3a-c48b-432b-98a4-ae8911e50e61.jpg",
+          "durationSeconds": 3.6349583333333335,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "3b9ce687-f0c8-416d-b208-48ae469f2780",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480777175,
+          "trigger": "talk-back",
+          "genre": "horror",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, breath shallow, eyeing the blue river.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3921,
+            "tts": 995,
+            "total": 4918
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/3b9ce687-f0c8-416d-b208-48ae469f2780.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/3b9ce687-f0c8-416d-b208-48ae469f2780.jpg",
+          "durationSeconds": 3.979125,
+          "engine": "say",
+          "lightMode": false
+        },
+        {
+          "id": "0e6c5902-7600-414b-9b2a-f551192a6e27",
+          "streamId": "5b98393a-aef4-4234-a5b1-b946fc9cd86d",
+          "at": 1793480783563,
+          "trigger": "talk-back",
+          "genre": "heist",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "Hassan opened the red door, ignoring his low health, and stared at the blue river.",
+          "chapterTitle": "",
+          "chapterChanged": false,
+          "castUpdates": [],
+          "latency": {
+            "eyes": 0,
+            "writer": 3459,
+            "tts": 983,
+            "total": 4445
+          },
+          "audioUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/audio/0e6c5902-7600-414b-9b2a-f551192a6e27.wav",
+          "frameUrl": "/media/5b98393a-aef4-4234-a5b1-b946fc9cd86d/frames/0e6c5902-7600-414b-9b2a-f551192a6e27.jpg",
+          "durationSeconds": 4.5620416666666666,
+          "engine": "say",
+          "lightMode": false
+        }
+      ]
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "623b9964-3fd9-489c-b923-fec7f2267d9a",
+      "rows": [
+        {
+          "at": 1793479858918,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6307,
+            "writer": 3703,
+            "tts": 0,
+            "total": 10014
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793479868931,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10007,
+            "tts": 0,
+            "total": 10008
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        }
+      ],
+      "beats": []
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "719ac551-9657-4519-950a-719dec1e2b0b",
+      "rows": [
+        {
+          "at": 1793480391970,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6586,
+            "writer": 3426,
+            "tts": 0,
+            "total": 10013
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480401995,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10014,
+            "tts": 0,
+            "total": 10015
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        }
+      ],
+      "beats": []
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "96a79ec3-ad1d-4bf3-98ae-572c60c0f27d",
+      "rows": [
+        {
+          "at": 1793480233232,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6419,
+            "writer": 3587,
+            "tts": 0,
+            "total": 10010
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480243240,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10002,
+            "tts": 0,
+            "total": 10002
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        }
+      ],
+      "beats": []
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "a0deb601-a12b-4cd7-8188-851b2290aa0d",
+      "rows": [
+        {
+          "at": 1793480077956,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6651,
+            "writer": 3355,
+            "tts": 0,
+            "total": 10008
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        },
+        {
+          "at": 1793480087965,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10004,
+            "tts": 0,
+            "total": 10004
+          },
+          "reason": "Beat exceeded 10 seconds; skipped",
+          "genre": "noir"
+        }
+      ],
+      "beats": []
+    },
+    {
+      "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+      "mode": "normal",
+      "model": "gpt-oss:20b",
+      "streamId": "fcfe2e60-a5bd-46b9-b436-17001116dd5f",
+      "rows": [
+        {
+          "at": 1793479362998,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 6796,
+            "writer": 3206,
+            "tts": 0,
+            "total": 10004
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        },
+        {
+          "at": 1793479373010,
+          "status": "skipped",
+          "trigger": "talk-back",
+          "caption": "Simulated scene: red door, blue river, low health.",
+          "line": "",
+          "latency": {
+            "eyes": 0,
+            "writer": 10009,
+            "tts": 0,
+            "total": 10009
+          },
+          "reason": "Beat exceeded 10 seconds; skipped"
+        }
+      ],
+      "beats": []
+    }
+  ]
+}

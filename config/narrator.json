@@ -10,8 +10,24 @@
         "The map marked the exit in yellow. The protagonist pursued a more personal interpretation.",
         "The transcript said 'easy jump.' The water below entered that statement into evidence."
       ],
-      "voice": "bm_george", "speed": 0.92, "pitch": 0,
-      "displayStyle": { "fontFamily": "serif", "typography": "condensed serif", "color": "#eeeeee", "accentColor": "#9ca3af", "effect": "shadow" }
+      "voice": "bm_george",
+      "speed": 0.92,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "serif",
+        "typography": "condensed serif",
+        "color": "#eeeeee",
+        "accentColor": "#9ca3af",
+        "effect": "shadow"
+      },
+      "exampleScenes": [
+        "The health bar is red and nearly empty. The protagonist claimed to be fine.",
+        "Three doors are locked. The protagonist has no key and tries another door.",
+        "The magazine is empty and clicks when the protagonist fires.",
+        "It is raining in an alley. The protagonist parked across the exit.",
+        "A yellow map marker shows the exit. The protagonist went the other way.",
+        "The protagonist said easy jump, then fell into water."
+      ]
     },
     "nature": {
       "persona": "An original field observer studying the protagonist's curious habits. Use third person, past tense and specific visible facts. Let gentle ecological observations carry the joke. Never insult viewers or imitate real presenters.",
@@ -23,8 +39,24 @@
         "The herd crossed the bridge. The protagonist investigated the riverbed instead.",
         "After declaring 'I know the way,' the protagonist returned to the same orange tent. A migration of exceptional brevity."
       ],
-      "voice": "af_bella", "speed": 0.95, "pitch": 0,
-      "displayStyle": { "fontFamily": "sans-serif", "typography": "humanist sans", "color": "#e8f2df", "accentColor": "#87a96b", "effect": "plate" }
+      "voice": "af_bella",
+      "speed": 0.95,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "sans-serif",
+        "typography": "humanist sans",
+        "color": "#e8f2df",
+        "accentColor": "#87a96b",
+        "effect": "plate"
+      },
+      "exampleScenes": [
+        "The protagonist picked up a seventh stone beside a glowing mushroom.",
+        "A red warning circle grew around the stationary protagonist.",
+        "The protagonist approached a sleeping bear holding a frying pan.",
+        "The protagonist discarded three potions by a blue river to collect a spoon.",
+        "A herd crossed a bridge. The protagonist fell into the river.",
+        "The protagonist said I know the way and returned to an orange tent."
+      ]
     },
     "epic": {
       "persona": "An original chronicler who gave small failures ceremonial gravity. Third person, past tense, grounded in the caption or transcript. Keep grandeur brief and the protagonist's roast gentle. Never mock viewers or imitate real performers.",
@@ -36,8 +68,24 @@
         "The final potion vanished before the battle. Thus began the age of consequences.",
         "The protagonist proclaimed 'first try' beside a pile of identical shields. The archives politely disagreed."
       ],
-      "voice": "bm_lewis", "speed": 0.94, "pitch": 0,
-      "displayStyle": { "fontFamily": "serif", "typography": "engraved caps", "color": "#f5d67b", "accentColor": "#c49b38", "effect": "chapter" }
+      "voice": "bm_lewis",
+      "speed": 0.94,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "serif",
+        "typography": "engraved caps",
+        "color": "#f5d67b",
+        "accentColor": "#c49b38",
+        "effect": "chapter"
+      },
+      "exampleScenes": [
+        "An iron gate is locked. The protagonist tried a key labelled shed.",
+        "The protagonist challenged a dragon with only one heart remaining.",
+        "The protagonist opened a gold chest containing only four coins.",
+        "The protagonist jumped at a broken bridge and fell short.",
+        "The protagonist drank the final potion before the battle started.",
+        "The protagonist said first try beside a pile of identical broken shields."
+      ]
     },
     "sports": {
       "persona": "An original compact match reporter with precise observations and restrained excitement. Third person, past tense. Name concrete actions before the joke. Roast only the protagonist gently; never viewers. No real commentator's catchphrases.",
@@ -49,8 +97,24 @@
         "The blue team captured the flag while the protagonist contested a particularly stubborn fence.",
         "The protagonist called 'watch this,' hit the ramp, and finished the lap facing the audience."
       ],
-      "voice": "am_adam", "speed": 1.08, "pitch": 0,
-      "displayStyle": { "fontFamily": "sans-serif", "typography": "bold italic sans", "color": "#ffffff", "accentColor": "#2563eb", "effect": "lower-third" }
+      "voice": "am_adam",
+      "speed": 1.08,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "sans-serif",
+        "typography": "bold italic sans",
+        "color": "#ffffff",
+        "accentColor": "#2563eb",
+        "effect": "lower-third"
+      },
+      "exampleScenes": [
+        "The protagonist missed an open goal from two steps away by hitting the post.",
+        "The leading protagonist was hit by three red shells.",
+        "An opponent arrived in a doorway while the protagonist reloaded.",
+        "One second remains on the timer. The protagonist opened settings.",
+        "The blue team took the flag while the protagonist ran into a fence.",
+        "The protagonist said watch this, hit a ramp and spun around."
+      ]
     },
     "horror": {
       "persona": "An original quietly ominous storyteller who found tension in concrete details. Third person, past tense, concise and mildly unsettling without gore. Gentle jokes target the protagonist alone. Never imitate real voices or catchphrases.",
@@ -62,8 +126,24 @@
         "The basement stairs creaked under one pair of boots. The subtitle mentioned two.",
         "The flashlight died beside the locked lift. The protagonist's spare batteries remained safely in the room upstairs."
       ],
-      "voice": "am_echo", "speed": 0.88, "pitch": 0,
-      "displayStyle": { "fontFamily": "serif", "typography": "distressed type", "color": "#f2eeee", "accentColor": "#bb3030", "effect": "red-flicker" }
+      "voice": "am_echo",
+      "speed": 0.88,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "serif",
+        "typography": "distressed type",
+        "color": "#f2eeee",
+        "accentColor": "#bb3030",
+        "effect": "red-flicker"
+      },
+      "exampleScenes": [
+        "The corridor light blinked twice. The protagonist turned off their flashlight.",
+        "Something scratched behind a red door. The protagonist selected a spoon.",
+        "The protagonist opened an empty cupboard while footsteps continued.",
+        "The protagonist said nobody here as another shadow moved across yellow wallpaper.",
+        "The stairs creaked under the protagonist boots, and a subtitle referred to two pairs.",
+        "The protagonist flashlight died beside a locked lift. The spare batteries were upstairs."
+      ]
     },
     "heist": {
       "persona": "An original operations chronicler who described improvised plans with deadpan precision. Third person, past tense, anchored to real screen or transcript details. Gently roast the protagonist's planning; never viewers. No imitation of real people.",
@@ -75,20 +155,62 @@
         "The protagonist said 'quiet entry' and selected the crowbar. The glass doors filed an objection.",
         "Two guards passed the trolley. The protagonist hid behind the smaller of its two empty boxes."
       ],
-      "voice": "am_michael", "speed": 1.02, "pitch": 0,
-      "displayStyle": { "fontFamily": "monospace", "typography": "monospace", "color": "#ffdc9a", "accentColor": "#e3a83f", "effect": "terminal" }
+      "voice": "am_michael",
+      "speed": 1.02,
+      "pitch": 0,
+      "displayStyle": {
+        "fontFamily": "monospace",
+        "typography": "monospace",
+        "color": "#ffdc9a",
+        "accentColor": "#e3a83f",
+        "effect": "terminal"
+      },
+      "exampleScenes": [
+        "The protagonist stood under a security camera rather than disabling it.",
+        "A vault needs a four-digit code. The protagonist has three grenades.",
+        "The protagonist left the getaway car keys in the building that just locked down.",
+        "The laser grid turned red. The protagonist began running.",
+        "The protagonist said quiet entry and selected a crowbar in front of glass doors.",
+        "Two guards passed a trolley. The protagonist hid behind a small empty box."
+      ]
     }
   },
-  "cadence": { "defaultSeconds": 35, "minSeconds": 15, "maxSeconds": 90, "minimumGapSeconds": 8, "talkBackBypassesGap": true },
+  "cadence": {
+    "defaultSeconds": 35,
+    "minSeconds": 15,
+    "maxSeconds": 90,
+    "minimumGapSeconds": 8,
+    "talkBackBypassesGap": true
+  },
   "limits": {
-    "lineWords": 30, "captionWords": 25, "summaryWords": 120,
-    "summaryEveryBeats": 5, "recentLines": 6, "beatTimeoutMs": 10000,
-    "invalidJsonRetries": 1, "concurrentBeats": 1, "promptCharacters": 12000,
-    "twistCharacters": 120, "twistQueue": 3, "twistCooldownSeconds": 120,
-    "genreCooldownSeconds": 180, "genreVoteWindowSeconds": 30, "genreMinimumVoters": 3,
-    "recapCooldownSeconds": 120, "transcriptSpikeLines": 3, "transcriptSpikeWindowSeconds": 10,
-    "frameWidthPixels": 768, "spiceMin": 0, "spiceMax": 3
+    "lineWords": 30,
+    "captionWords": 25,
+    "summaryWords": 120,
+    "summaryEveryBeats": 5,
+    "recentLines": 6,
+    "beatTimeoutMs": 10000,
+    "invalidJsonRetries": 1,
+    "concurrentBeats": 1,
+    "promptCharacters": 12000,
+    "twistCharacters": 120,
+    "twistQueue": 3,
+    "twistCooldownSeconds": 120,
+    "genreCooldownSeconds": 180,
+    "genreVoteWindowSeconds": 30,
+    "genreMinimumVoters": 3,
+    "recapCooldownSeconds": 120,
+    "transcriptSpikeLines": 3,
+    "transcriptSpikeWindowSeconds": 10,
+    "frameWidthPixels": 768,
+    "spiceMin": 0,
+    "spiceMax": 3
   },
   "twistMode": "approve",
-  "blocklist": ["kill yourself", "kys", "dox", "doxx", "swatting"]
+  "blocklist": [
+    "kill yourself",
+    "kys",
+    "dox",
+    "doxx",
+    "swatting"
+  ]
 }
