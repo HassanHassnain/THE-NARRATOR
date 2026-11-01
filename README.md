@@ -6,7 +6,7 @@ A live narrator voice watches your game and tells your stream as a story, with y
 
 Seven voices: six cinematic narrators (noir, nature documentary, epic legend, sports, horror, heist) and **Unhinged**, a narrator with the brain of Twitch chat that writes like a chat message, with real 7TV/BTTV/Twitch emotes on screen.
 
-It runs on the streamer's own computer with local models: no API keys, no per-hour cost, and the game footage never leaves the machine.
+It runs on the streamer's own computer: the vision, writing and voice models are local, so there is no paid AI API, no per-hour cost, and the game footage never leaves the machine.
 
 | Overlay style previews (illustrative content) | Control room |
 |---|---|
