@@ -20,7 +20,7 @@ npm install
 npm run build && npm start
 ```
 
-Open **http://localhost:3000/demo** and press play. The bundled fixture replays six real local-model audio outputs generated from a synthetic frame and scripted speech; it is labelled as a model check, with no live Twitch claim. It plays through the same overlay used on stream. Then open **/episode/demo** to see that session as a storybook.
+Open **http://localhost:3000/demo** and press play. The bundled fixture replays a recorded live session: seven narrated beats from a real Minecraft stream, including a viewer's plot twist and a reaction to chat spam, with the narrator's real local-model audio. It replays the recording; no models or Twitch connection are needed. It plays through the same overlay used on stream. Then open **/episode/demo** to see that session as a storybook.
 
 ## Try it on your own screen in 5 minutes
 
@@ -87,13 +87,13 @@ npm run demo:capture -- <streamId>   # stage/validate media, back up the old fix
 npm run screens        # regenerate README screenshots from a running server
 ```
 
-## How Codex built it
+## How I built it with Codex
 
-The project was built with OpenAI Codex in phases from a written spec (`docs/SPEC.md`) and `AGENTS.md` (repo rules, usage budget, definition of done). Each phase's prompt, verification and measurements are in [`codex-log/`](codex-log/): scaffold, the local narration loop with measured latency, then Twitch chat and events. Fixes and finishing work done outside Codex are listed separately in `codex-log/FIXES_2026-11-01_outside-codex.md`.
+I wrote a spec (`docs/SPEC.md`) and an `AGENTS.md` (repo rules, usage budget, definition of done), then Codex built the project in phases. Each phase's prompt, verification and measurements are in [`codex-log/`](codex-log/): scaffold, the local narration loop with measured latency, then Twitch chat and events. The changes that came out of testing on real streams are listed in [`codex-log/FIXES_2026-11-01_outside-codex.md`](codex-log/FIXES_2026-11-01_outside-codex.md); Codex reviewed the first 21 of them in Phase 3 ([`PHASE_3_REVIEW.md`](codex-log/PHASE_3_REVIEW.md)). The main Codex session is `01a19387-1b56-7021-b2df-3d1df2a6c36d`.
 
 ## Limits, stated plainly
 
-- Narration lands about 7–12 s after a moment: fine for narration, not for split-second commentary.
+- Narration lands about 3–9 s after a moment on my live takes (slower with macOS Low Power Mode on): fine for narration, not for split-second commentary.
 - Speech recognition uses Chrome's Web Speech API, which may use Google's speech service.
 - Local model quality varies; the default 4B model is chosen for running alongside a game on a 24 GB Mac.
 - Tested on macOS (Apple Silicon). Kokoro and Ollama run elsewhere too, but the macOS voice fallback does not.

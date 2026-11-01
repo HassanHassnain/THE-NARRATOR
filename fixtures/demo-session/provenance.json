@@ -1,5 +1,5 @@
 {
-  "source": "model-check",
-  "streamId": "0627b047-5e5b-419e-97ad-fa8e70c776b7",
-  "label": "Recorded local models · synthetic frame and scripted speech · no live Twitch evidence"
+  "source": "stream",
+  "streamId": "b3284098-2e06-4e38-b085-525deb2f9669",
+  "label": "Recorded stream · replay, not live traffic"
 }
