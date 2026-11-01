@@ -84,6 +84,11 @@ describe('beat transaction', () => {
     expect(await s.runner.run(s.input())).toBeUndefined(); expect(s.tts.calls).toHaveLength(0);
     expect(blocked('kys')).toBe(true); expect(blocked('skyscraper')).toBe(false); expect(blocked('kill your\u200bself')).toBe(true);
   });
+  it('recaps without waiting for a fresh screen caption', async () => {
+    const s = setup();
+    expect(await s.runner.run({ ...s.input(), transcript: [], trigger: 'recap' })).toBeDefined();
+    expect(s.eyes.calls).toBe(0);
+  });
   it('attaches accepted twist credit and updates canon only after saved audio', async () => {
     const s = setup(); const twist = { id: 'twist', author: 'friend', text: 'The red door belonged to the cat.' };
     const beat = await s.runner.run({ ...s.input(), trigger: 'twist', twist });
@@ -142,9 +147,15 @@ describe('prompt and model boundaries', () => {
     expect(result.value.line).toBe('Hassan reached the locked red door.'); expect(complete).toHaveBeenCalledTimes(2);
   });
   it('validates two-sentence recap output before voice', async () => {
-    const complete=vi.fn().mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door.',castUpdates:[]})).mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door. The key remained missing.',castUpdates:[]}));
+    const complete=vi.fn().mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door.',castUpdates:[]})).mockResolvedValueOnce(JSON.stringify({line:'Hassan reached the red door at last. The key he needed remained missing somewhere.',castUpdates:[]}));
     const result=await new LocalWriter({complete}).write({system:'system',user:'{}',model:'gemma3:4b',recap:true},new AbortController().signal);
-    expect(result.value.line).toContain('The key remained missing.');expect(complete).toHaveBeenCalledTimes(2);
+    expect(result.value.line).toContain('The key he needed remained missing somewhere.');expect(complete).toHaveBeenCalledTimes(2);
+    // Lowercase chat-style recaps still count as two sentences.
+    const chatRecap=vi.fn().mockResolvedValue(JSON.stringify({line:"he keeps building castles, then immediately drowning. the sheep are staging a coup, chat's just KEKW",castUpdates:[]}));
+    expect((await new LocalWriter({complete:chatRecap}).write({system:'system',user:'{}',model:'gemma3:4b',recap:true,chatStyle:true},new AbortController().signal)).value.line).toContain('sheep');
+    // A two-"sentence" quip is not a recap.
+    const quip=vi.fn().mockResolvedValue(JSON.stringify({line:'summit of a blue puddle? L',castUpdates:[]}));
+    await expect(new LocalWriter({complete:quip}).write({system:'system',user:'{}',model:'gemma3:4b',recap:true,chatStyle:true},new AbortController().signal)).rejects.toThrow('Recap');
   });
   it('caps captions and fails closed on unsafe/invalid viewer screen output', async () => {
     const client: ChatClient = { complete: vi.fn().mockResolvedValue('word '.repeat(26)) };
@@ -175,8 +186,32 @@ describe('chapter titles and wake word', () => {
   });
   it('hears common mis-transcriptions of the wake word', async () => {
     const { wakeWord } = await import('../src/server/director/triggers.js');
-    for (const t of ['Narrator, why?', 'narrater help', 'hey narator', 'nerator stop']) expect(wakeWord(t)).toBe(true);
+    for (const t of ['Narrator, why?', 'narrater help', 'hey narator', 'nerator stop', 'Nader, are you there?', 'nadir you seeing this']) expect(wakeWord(t)).toBe(true);
     expect(wakeWord('the narration was fine')).toBe(false);
+  });
+  it('rewrites misheard wake words so the narrator is not called "Nader"', async () => {
+    const { normalizeWakeWord } = await import('../src/server/director/triggers.js');
+    expect(normalizeWakeWord('For example, Nader, are you there? nadir!')).toBe('For example, Narrator, are you there? Narrator!');
+    expect(normalizeWakeWord('the narration was fine')).toBe('the narration was fine');
+  });
+});
+describe('line and title cleanup', () => {
+  it('drops leaked trigger names as chapter titles and trims long lines to whole sentences', async () => {
+    const { cleanChapterTitle, fitSentences, parseNarration } = await import('../src/server/ai/writer.js');
+    expect(cleanChapterTitle('cadence')).toBe(''); expect(cleanChapterTitle('Talk-back')).toBe(''); expect(cleanChapterTitle('Blue Water Blues')).toBe('Blue Water Blues');
+    const long = "That silence speaks volumes, Saad, a testament to a tactical collapse. The yellow block offered no salvation, only further proof of everything.";
+    expect(fitSentences(long, 20)).toBe('That silence speaks volumes, Saad, a testament to a tactical collapse.');
+    expect(() => fitSentences('one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty twentyone.', 20)).toThrow();
+    expect(parseNarration(JSON.stringify({ line: 'He never mastered *playing*.', castUpdates: [] })).line).toBe('He never mastered playing.');
+    expect(parseNarration(JSON.stringify({ line: long, castUpdates: [] }), false, 20).line).toBe('That silence speaks volumes, Saad, a testament to a tactical collapse.');
+  });
+  it('asks for an opening line on the first beat and never for silence roasts', async () => {
+    const { buildPrompt } = await import('../src/server/director/promptBuilder.js');
+    const input = { state: createStory('Saad'), settings: { ...settings, protagonist: 'Saad' }, caption: 'sand', transcript: [], events: [], trigger: 'cadence' as const, model: 'gemma3:4b' };
+    const first = buildPrompt(input);
+    expect(first.user).toContain('OPENING'); expect(first.user).not.toMatch(/silence/i); expect(first.maxWords).toBe(20);
+    expect(buildPrompt({ ...input, state: { ...input.state, beatCount: 3 } }).user).not.toContain('OPENING');
+    expect(buildPrompt({ ...input, trigger: 'recap' }).maxWords).toBe(30);
   });
 });
 describe('chat pulse', () => {
@@ -205,6 +240,14 @@ describe('chat pulse', () => {
     for (let t = 0; t < 5000; t += 1000) pulse.add({ authorId: 'solo', text: 'Pog' }, t);
     expect(fired).toHaveLength(1);
   });
+  it('can be tuned so one chatter in a tiny stream needs fewer reactions', async () => {
+    const { ChatPulse } = await import('../src/server/twitch/pulse.js');
+    const fired: string[] = []; const pulse = new ChatPulse(e => fired.push(e.detail), 12000, 25000, 3);
+    pulse.add({ authorId: 'solo', text: 'KEKW' }, 0); pulse.add({ authorId: 'solo', text: 'KEKW KEKW' }, 5000);
+    expect(fired).toHaveLength(0);
+    pulse.add({ authorId: 'solo', text: 'LMAOOO' }, 11000);
+    expect(fired).toHaveLength(1); expect(fired[0]).toContain('1 chatter');
+  });
 });
 describe('emotes in speech', () => {
   it('does not speak emote words', async () => {
@@ -212,6 +255,9 @@ describe('emotes in speech', () => {
     expect(stripEmotes("it's so over KEKW")).toBe("it's so over");
     expect(stripEmotes('he walked past the diamonds. ICANT')).toBe('he walked past the diamonds.');
     expect(stripEmotes('KEKW')).toBe('');
+    expect(stripEmotes("you're building a swimming pool with blocks, man. L")).toBe("you're building a swimming pool with blocks, man.");
+    expect(stripEmotes("he's still saying he's new. LMAOOO")).toBe("he's still saying he's new.");
+    expect(stripEmotes('Lights went out.')).toBe('Lights went out.');
   });
 });
 describe('emote spelling', () => {

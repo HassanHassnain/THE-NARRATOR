@@ -10,7 +10,16 @@ export const narrationSchema = {
     usedTwistId: { type: 'string' }
   }, required: ['line', 'chapterTitle', 'castUpdates', 'usedTwistId']
 };
-export function parseNarration(text: string, chatStyle = false): Narration {
+/** Keeps whole sentences up to maxWords, so a long line still fits two subtitle lines; one over-long sentence is rejected. */
+export function fitSentences(line: string, maxWords: number): string {
+  if (wordCount(line) <= maxWords) return line;
+  const sentences = line.match(/[^.!?…]+[.!?…]+["'”’]?/gu) ?? [line];
+  let kept = '';
+  for (const sentence of sentences) { const next = (kept + ' ' + sentence.trim()).trim(); if (wordCount(next) > maxWords) break; kept = next; }
+  if (!kept) throw new Error(`Use at most ${maxWords} words.`);
+  return kept;
+}
+export function parseNarration(text: string, chatStyle = false, maxWords = 30): Narration {
   const value: unknown = JSON.parse(text);
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Expected narration object');
   const v = value as Record<string, unknown>;
@@ -22,12 +31,22 @@ export function parseNarration(text: string, chatStyle = false): Narration {
   if (typeof v.chapterTitle === 'string' && v.chapterTitle.length > 100) throw new Error('Chapter title too long');
   const chapterTitle = typeof v.chapterTitle === 'string' ? cleanChapterTitle(v.chapterTitle) : '';
   return {
-    line: v.line.trim(), castUpdates: v.castUpdates as Narration['castUpdates'],
+    // Markdown emphasis (*playing*) would be read aloud as "asterisk".
+    line: chatStyle ? v.line.trim().replace(/\*+/gu, '') : fitSentences(v.line.trim().replace(/\*+/gu, ''), maxWords), castUpdates: v.castUpdates as Narration['castUpdates'],
     ...(chapterTitle ? { chapterTitle } : {}),
     ...(v.usedTwistId ? { usedTwistId: v.usedTwistId as string } : {})
   };
 }
 export { cleanChapterTitle } from '../../shared/chapter.js';
+const fillerWords = new Set(['that', 'this', 'with', 'they', 'them', 'were', 'have', 'been', 'from', 'into', 'their', 'there', 'what', 'when', 'will', 'would', 'about', 'after', 'just', 'like', 'your', 'actually', 'secretly', 'really']);
+/** Counts sentences by end punctuation. Intl.Segmenter skips a break before a lowercase word, so chat-style recaps counted as one sentence. */
+export const sentenceCount = (text: string) => text.split(/(?<=[.!?…])\s+/u).filter(part => /\p{L}/u.test(part)).length;
+/** True when the line uses a key word of the twist, compared on its first five letters so "coups" or "planned" still count. */
+export function mentionsTwist(line: string, twist: string) {
+  const stems = (text: string) => new Set((text.toLowerCase().match(/\p{L}{4,}/gu) ?? []).filter(word => !fillerWords.has(word)).map(word => word.slice(0, 5)));
+  const key = stems(twist); if (!key.size) return true;
+  const said = stems(line); return [...key].some(word => said.has(word));
+}
 export class LocalWriter implements Writer {
   constructor(private client: ChatClient) {}
   write(request: WriteRequest, signal: AbortSignal) {
@@ -66,8 +85,9 @@ export class LocalWriter implements Writer {
             if (!request.twistId && output.usedTwistId) throw new Error('Writer referenced an unknown twist');
             normalized = JSON.stringify({ ...output, castUpdates: [] });
           }
-          const narration = parseNarration(normalized, request.chatStyle);
-          if (request.recap && [...new Intl.Segmenter('en', { granularity: 'sentence' }).segment(narration.line)].length !== 2) throw new Error('Recap must contain exactly two short complete sentences, at most 30 words total.');
+          const narration = parseNarration(normalized, request.chatStyle, request.maxWords);
+          if (request.twistText && !mentionsTwist(narration.line, request.twistText)) throw new Error(`The line must reveal the plot twist itself: "${request.twistText.slice(0, 120)}"`);
+          if (request.recap && (sentenceCount(narration.line) !== 2 || narration.line.split(/\s+/u).length < 12)) throw new Error('Recap must contain exactly two short complete sentences, 12 to 30 words total, telling the story so far.');
           if (request.recentLines?.includes(narration.line)) throw new Error('Repeated recent line. Use the latest spoken words and a different concrete detail.');
           return narration;
         } catch (error) { invalid = error; }

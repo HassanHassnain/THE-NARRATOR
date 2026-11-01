@@ -6,7 +6,7 @@ import type { Director } from '../director/index.js';
 import { SeenIds, type ChatMessage } from './types.js';
 import { ChatPulse } from './pulse.js';
 export class CommandRouter {
-  mode: 'approve' | 'auto' = 'approve'; modsOnly = false;
+  mode: 'approve' | 'auto' = config.twistMode === 'auto' ? 'auto' : 'approve'; modsOnly = false;
   pending: Twist[] = []; blocklist = [...config.blocklist];
   readonly seen = new SeenIds();
   private twistAt = new Map<string, number>(); private recapAt = -Infinity;
@@ -16,7 +16,7 @@ export class CommandRouter {
   readonly pulse = new ChatPulse(event => {
     if (this.director.events.length >= 50 || blocked(event.detail, this.blocklist) || this.director.events.some(e => e.kind === 'hype')) return;
     this.director.events.push(event); this.notice(`Chat reaction: ${event.detail}`); this.changed();
-  });
+  }, (config.limits.chatPulseWindowSeconds ?? 10) * 1000, 25000, config.limits.chatPulseSoloMessages ?? 5);
   constructor(private director: Director, private screen: Screen, private changed: () => void, private notice: (text: string) => void) {}
   async handle(message: ChatMessage, now = Date.now()): Promise<void> {
     if (!this.seen.add(message.sourceId || message.id, now)) return;
@@ -46,13 +46,16 @@ export class CommandRouter {
     if (!text || text.length > 120 || blocked(`${message.author} ${text}`, this.blocklist)) { this.notice('Twist rejected by length limit or blocklist.'); return; }
     if (now - (this.twistAt.get(message.authorId) ?? -Infinity) < 120000) return;
     if (this.pending.length + this.director.twists.length >= 3 || this.screening) { this.notice('Twist queue or safety screen is busy.'); return; }
-    this.twistAt.set(message.authorId, now); this.screening = true; const epoch = this.queueEpoch;
+    // A rejected twist only costs a short wait, so a viewer can rephrase; an accepted one starts the full cooldown.
+    this.twistAt.set(message.authorId, now - 120000 + 15000); this.screening = true; const epoch = this.queueEpoch;
     try {
-      const result = await this.screen.check(`Viewer name: ${message.author}\nProposed plot twist: ${text}`, AbortSignal.timeout(6000));
+      // Only the twist text goes to the model: it misread usernames ("muhammad_...") as religious references or personal data. The blocklist still checks the name.
+      // The screen shares the local model with narration and TTS; under load it took over 6 s. A timeout still rejects.
+      const result = await this.screen.check(`Proposed plot twist: ${text}`, AbortSignal.timeout(15000));
       if (epoch !== this.queueEpoch) return;
       if (!result.allow || blocked(`${message.author} ${text}`, this.blocklist)) { this.notice(`Twist rejected: ${result.reason}`); return; }
       if (this.pending.length + this.director.twists.length >= 3) return;
-      const twist = { id: randomUUID(), author: message.author.slice(0,80), text };
+      const twist = { id: randomUUID(), author: message.author.slice(0,80), text }; this.twistAt.set(message.authorId, now);
       const privileged = message.badges.some(b => ['moderator', 'vip', 'broadcaster'].includes(b));
       if (this.mode === 'auto' && (!this.modsOnly || privileged)) this.director.twists.push(twist); else this.pending.push(twist);
       this.notice(`Twist screened in ${result.latencyMs} ms; ${this.pending.includes(twist) ? 'awaiting approval' : 'accepted'}.`);
@@ -68,6 +71,8 @@ export class CommandRouter {
   }
   reject(id: string) { this.pending = this.pending.filter(t => t.id !== id); this.changed(); }
   clear() { this.queueEpoch++; this.pending = []; this.director.twists = []; this.changed(); }
+  /** A new episode starts with no queued twists and no cooldowns or votes left over from the last one. */
+  resetEpisode() { this.queueEpoch++; this.pending = []; this.twistAt.clear(); this.recapAt = -Infinity; this.voteStart = -Infinity; this.votes.clear(); this.pulse.reset(); this.changed(); }
   close() { this.queueEpoch++; this.blocklistEpoch++; }
   setBlocklist(words: string[]) {
     this.queueEpoch++; this.blocklistEpoch++;
@@ -77,13 +82,9 @@ export class CommandRouter {
   }
   async event(event: StoryEvent) {
     if (!this.seen.add('event:'+event.id) || blocked(`${event.author} ${event.detail}`, this.blocklist)) return;
-    const epoch = this.blocklistEpoch;
-    try {
-      const result = await this.screen.check(`Viewer name: ${event.author}\nStream event: ${event.kind} ${event.detail}`, AbortSignal.timeout(6000));
-      if (epoch !== this.blocklistEpoch) return;
-      if (!result.allow || blocked(`${event.author} ${event.detail}`, this.blocklist)) return;
-      if (this.director.events.length >= 50) { this.notice('Event queue full; event skipped.'); return; }
-      this.director.events.push(event); this.notice(`Event screened in ${result.latencyMs} ms.`); this.changed();
-    } catch { this.notice('Event safety screen unavailable; event skipped.'); }
+    // An event's only viewer text is a Twitch username, which Twitch already moderates; the blocklist still applies.
+    // A model screen here falsely rejected ordinary names, which would silently drop follows.
+    if (this.director.events.length >= 50) { this.notice('Event queue full; event skipped.'); return; }
+    this.director.events.push(event); this.changed();
   }
 }

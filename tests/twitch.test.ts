@@ -23,6 +23,34 @@ function setup() {
   return { router, director, screen, runner, writer, tts, notice };
 }
 afterEach(() => vi.useRealTimers());
+describe('episodes', () => {
+  it('lets a viewer rephrase a rejected twist after 15 s, and starts each episode with no cooldowns', async () => {
+    const s = setup(); s.router.mode = 'auto'; s.screen.allow = false;
+    const from = (id: string, text: string) => ({ ...message(id, text), authorId: 'saad' });
+    await s.router.handle(from('a', '!twist change the ending'), 1000); expect(s.director.twists).toEqual([]);
+    s.screen.allow = true; await s.router.handle(from('b', '!twist the sheep are planning a coup'), 10000); expect(s.director.twists).toEqual([]);
+    await s.router.handle(from('c', '!twist the sheep are planning a coup'), 17000); expect(s.director.twists).toHaveLength(1);
+    await s.router.handle(from('d', '!twist the moon is a drone'), 20000); expect(s.director.twists).toHaveLength(1);
+    await s.router.handle(from('e', '!genre sports'), 21000); await s.router.handle(from('f', '!recap'), 22000); s.director.recap = false;
+    s.router.resetEpisode(); s.director.twists = [];
+    await s.router.handle(from('g', '!twist the moon is a drone'), 23000); expect(s.director.twists).toHaveLength(1);
+    await s.router.handle(from('h', '!genre horror'), 24000); expect(s.director.settings.genre).toBe('horror');
+    await s.router.handle(from('i', '!recap'), 25000); expect(s.director.recap).toBe(true);
+  });
+  it('passes follows on without a model screen, so ordinary names are never dropped', async () => {
+    const s = setup(); s.screen.allow = false;
+    await s.router.event({ id: 'f1', kind: 'follow', author: 'muhammad_saad_983', detail: 'followed the channel' });
+    expect(s.director.events).toHaveLength(1);
+  });
+  it('starts a fresh story with the current settings when a new recording begins', () => {
+    const s = setup(); s.director.settings.protagonist = 'Saad'; s.director.settings.genre = 'sports';
+    const before = s.director.state.streamId; s.director.state.beatCount = 4;
+    s.director.twists.push({ id: 't', author: 'a', text: 'b' }); s.director.events.push({ id: 'e', kind: 'follow', author: 'a', detail: 'followed' }); s.director.recap = true;
+    const id = s.director.newEpisode();
+    expect(id).not.toBe(before); expect(s.director.state).toMatchObject({ streamId: id, protagonist: 'Saad', genre: 'sports', canon: [], beatCount: 0 });
+    expect([s.director.twists, s.director.events, s.director.recap]).toEqual([[], [], false]);
+  });
+});
 describe('IRC and Shared Chat', () => {
   it('parses tags, escaping, first command token, and source message IDs', () => {
     const raw = '@id=copy;source-id=original;user-id=7;display-name=Plot\\sFriend;badges=moderator/1,vip/1 :friend!friend@friend.tmi.twitch.tv PRIVMSG #channel :!TwIsT the cat owned the key';

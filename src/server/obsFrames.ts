@@ -4,6 +4,9 @@ export interface ObsStatus { configured: boolean; connected: boolean; source: st
 /** Reads one OBS source, never the composed scene or an unrelated window. */
 export class ObsFrames {
   status: ObsStatus;
+  /** Called when OBS starts recording, with the file it records to, and when it stops. */
+  onRecordStart: ((outputPath: string) => void) | undefined;
+  onRecordStop: (() => void) | undefined;
   private ws: WebSocket | undefined;
   private timer: ReturnType<typeof setInterval> | undefined;
   private retry: ReturnType<typeof setTimeout> | undefined;
@@ -40,10 +43,15 @@ export class ObsFrames {
         if (op === 0) {
           const auth = d.authentication as { salt?: unknown; challenge?: unknown } | undefined;
           if (auth && (typeof auth.salt !== 'string' || typeof auth.challenge !== 'string')) throw new Error('Invalid OBS authentication challenge');
-          ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1, eventSubscriptions: 0, ...(auth ? { authentication: hash(hash(this.password + auth.salt) + auth.challenge) } : {}) } }));
+          // Outputs events (1 << 6) only, for RecordStateChanged.
+          ws.send(JSON.stringify({ op: 1, d: { rpcVersion: 1, eventSubscriptions: 64, ...(auth ? { authentication: hash(hash(this.password + auth.salt) + auth.challenge) } : {}) } }));
         } else if (op === 2) {
           this.backoff = 1000; this.set({ connected: true, error: undefined });
           clearInterval(this.timer); this.timer = setInterval(() => void this.grab(ws), this.intervalMs); void this.grab(ws);
+        } else if (op === 5) {
+          const data = d.eventData as { outputState?: unknown; outputPath?: unknown } | undefined;
+          if (d.eventType === 'RecordStateChanged' && data?.outputState === 'OBS_WEBSOCKET_OUTPUT_STARTED') this.onRecordStart?.(typeof data.outputPath === 'string' ? data.outputPath : '');
+          if (d.eventType === 'RecordStateChanged' && data?.outputState === 'OBS_WEBSOCKET_OUTPUT_STOPPED') this.onRecordStop?.();
         } else if (op === 7 && typeof d.requestId === 'string') {
           const p = this.pending.get(d.requestId); if (!p) return;
           this.pending.delete(d.requestId); clearTimeout(p.timer);
@@ -60,6 +68,11 @@ export class ObsFrames {
       this.retry = setTimeout(() => this.connect(), this.backoff); this.backoff = Math.min(15000, this.backoff * 2);
     });
     ws.on('error', () => { /* ws emits close after transport errors */ });
+  }
+  /** Reloads a browser source (the chat panel), so each episode starts with an empty chat. Fire and forget. */
+  refreshBrowserSource(inputName: string) {
+    const ws = this.ws; if (!ws || ws.readyState !== WebSocket.OPEN || !this.status.connected) return;
+    try { ws.send(JSON.stringify({ op: 6, d: { requestType: 'PressInputPropertiesButton', requestId: randomUUID(), requestData: { inputName, propertyName: 'refreshnocache' } } })); } catch { /* reconnect handles it */ }
   }
   private request(ws: WebSocket) {
     return new Promise<Record<string, unknown>>((resolve, reject) => {

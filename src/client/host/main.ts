@@ -4,11 +4,15 @@ import type { PublicState, Settings, ClientMessage } from '../../shared/protocol
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const input = (id: string) => el<HTMLInputElement>(id);
 const button = (id: string) => el<HTMLButtonElement>(id);
-let state: PublicState | undefined;
+let state: PublicState | undefined; let listening = false;
 const socket = connect('host', message => {
   if (message.type === 'state') { state = message.state; render(state); }
   if (message.type === 'notice') el('notice').textContent = message.message;
-}, open => { el('connection').textContent = open ? 'Control room connected' : 'Reconnecting…'; });
+}, open => {
+  el('connection').textContent = open ? 'Control room connected' : 'Reconnecting…';
+  // After a server restart, tell it the microphone is still listening.
+  if (open && listening) socket.send({ type: 'mic', active: true });
+});
 const settings = (value: Partial<Settings>) => socket.send({ type: 'settings', settings: value });
 function render(s: PublicState) {
   const checks: [string, boolean][] = [['Ollama running', s.health.ollama], ['Models installed', s.health.ollama && !s.health.missing.length], ['Voice ready', s.voice.ready], ['Narrator can see', Date.now() - s.frameAt < 5000], ['Microphone on', s.mic], ['Overlay connected', s.overlays > 0], ['Twitch connected', s.twitch.chatConnected]];
@@ -120,10 +124,10 @@ const Speech = (window as unknown as { webkitSpeechRecognition?: new () => Recog
 let recognition: Recognition | undefined; let micWanted = false;
 button('mic').onclick = () => {
   if (!Speech) { el('speechStatus').textContent = 'Speech recognition unavailable. Use Chrome or the transcript fallback.'; return; }
-  micWanted = !micWanted;
+  micWanted = !micWanted; remember('narrator.mic', micWanted ? 'on' : 'off');
   if (!micWanted) { recognition?.stop(); socket.send({ type: 'mic', active: false }); button('mic').textContent = 'Enable microphone'; return; }
   recognition = new Speech(); recognition.continuous = true; recognition.interimResults = true; recognition.lang = 'en-US';
-  recognition.onstart = () => { socket.send({ type: 'mic', active: true }); el('speechStatus').textContent = 'Listening… Say “narrator” for a reply.'; button('mic').textContent = 'Stop microphone'; };
+  recognition.onstart = () => { listening = true; socket.send({ type: 'mic', active: true }); el('speechStatus').textContent = 'Listening… Say “narrator” for a reply.'; button('mic').textContent = 'Stop microphone'; };
   recognition.onresult = event => {
     let interim = '';
     for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -137,12 +141,17 @@ button('mic').onclick = () => {
     if (['not-allowed', 'service-not-allowed', 'audio-capture'].includes(event.error)) { micWanted = false; button('mic').textContent = 'Enable microphone'; }
   };
   recognition.onend = () => {
-    socket.send({ type: 'mic', active: false });
+    listening = false; socket.send({ type: 'mic', active: false });
     if (micWanted) setTimeout(() => { if (micWanted) { try { recognition?.start(); } catch { el('speechStatus').textContent = 'Speech stopped. Turn the microphone off and on to restart.'; } } }, 800);
     else { el('speechStatus').textContent = 'Microphone off'; button('mic').textContent = 'Enable microphone'; }
   };
   try { recognition.start(); } catch { micWanted = false; el('speechStatus').textContent = 'Could not start speech recognition. Use the transcript fallback.'; }
 };
+// The microphone stays on across reloads (or open /host?mic=on) so a stream can start without clicking through setup again.
+function remember(key: string, value: string) { try { localStorage.setItem(key, value); } catch { /* storage unavailable */ } }
+let micRemembered = new URLSearchParams(location.search).get('mic') === 'on';
+try { micRemembered ||= localStorage.getItem('narrator.mic') === 'on'; } catch { /* storage unavailable */ }
+if (micRemembered) setTimeout(() => { if (!micWanted) button('mic').click(); }, 1500);
 void fetch('/api/config').then(r => r.json()).then((c: { simulated: boolean }) => { el('simulated').hidden = !c.simulated; });
 window.addEventListener('pagehide', () => { stopCapture(); micWanted = false; recognition?.stop(); socket.close(); });
 

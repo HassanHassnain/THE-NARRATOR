@@ -1,5 +1,6 @@
 import { createServer } from 'node:http';
-import { readdir, readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, rename, stat, writeFile } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { extname, resolve, sep } from 'node:path';
 import type { ViteDevServer } from 'vite';
 import { config, eyesModel, writerModel, resourceVoiceFallback } from './config.js';
@@ -37,8 +38,40 @@ export async function createApp(production = false) {
   const logs: BeatLog[] = [];
   const runner = new BeatRunner(ai, store, beat => { hub.broadcast({ type: 'beat', beat }); twitch?.chapter(beat); }, log => { logs.unshift(log); logs.splice(100); hub.broadcastState(); }, config.limits.beatTimeoutMs ?? 15000, () => twitch?.router.blocklist ?? config.blocklist);
   const director = new Director(runner);
+  // The streamer's choices survive a server restart (data/settings.json); running and muted always start off.
+  const prefsFile = resolve('data/settings.json');
+  type Prefs = { protagonist?: string; genre?: string; cadenceSeconds?: number; spice?: number; twistMode?: 'approve' | 'auto'; modsOnly?: boolean };
+  let prefs: Prefs = {};
+  if (!fake) try { prefs = JSON.parse(readFileSync(prefsFile, 'utf8')) as Prefs; } catch { /* first run */ }
+  if (typeof prefs.protagonist === 'string' && prefs.protagonist.trim()) director.settings.protagonist = prefs.protagonist.trim().slice(0, 80);
+  if (genres.includes(prefs.genre as never)) director.settings.genre = prefs.genre as typeof director.settings.genre;
+  if (typeof prefs.cadenceSeconds === 'number') director.settings.cadenceSeconds = Math.max(15, Math.min(90, prefs.cadenceSeconds));
+  if (typeof prefs.spice === 'number') director.settings.spice = Math.max(0, Math.min(3, Math.round(prefs.spice)));
+  let savingPrefs: Promise<void> = Promise.resolve();
+  const savePrefs = () => {
+    if (fake) return;
+    const { protagonist, genre, cadenceSeconds, spice } = director.settings;
+    prefs = { ...prefs, protagonist, genre, cadenceSeconds, spice, ...(twitch ? { twistMode: twitch.router.mode, modsOnly: twitch.router.modsOnly } : {}) };
+    const text = JSON.stringify(prefs, null, 2);
+    // One write at a time, via a temp file, so overlapping saves cannot interleave.
+    savingPrefs = savingPrefs.then(() => writeFile(prefsFile + '.tmp', text)).then(() => rename(prefsFile + '.tmp', prefsFile)).catch(() => undefined);
+  };
   // OBS game-layer frames take priority over a browser screen share when OBS is configured.
+  const chatSource = process.env.OBS_CHAT_SOURCE ?? 'Twitch chat'; let startGenre = director.settings.genre;
   const obs = new ObsFrames(jpeg => { director.frame = jpeg; director.frameAt = Date.now(); }, () => hub?.broadcastState());
+  obs.onRecordStart = outputPath => {
+    // Every OBS recording is its own episode, linked to its file for editing and replay; the narrator runs while OBS records.
+    startGenre = director.settings.genre; twitch?.router.resetEpisode(); obs.refreshBrowserSource(chatSource);
+    const streamId = director.newEpisode(); hub?.broadcast({ type: 'stop' }); director.settings.running = true;
+    void store.saveRecording(streamId, { outputPath, startedAt: Date.now() }).catch(() => undefined);
+    hub?.notice('OBS started recording: new episode, narrator on.'); hub?.broadcastState();
+  };
+  obs.onRecordStop = () => {
+    // Back to how the take started: same genre, empty chat panel, no queued twists or cooldowns.
+    director.settings.running = false; director.settings.genre = startGenre; director.runner.cancel(); hub?.broadcast({ type: 'stop' });
+    director.twists = []; director.events = []; director.recap = false; twitch?.router.resetEpisode(); obs.refreshBrowserSource(chatSource);
+    savePrefs(); hub?.notice(`OBS stopped recording: narrator paused, back to ${startGenre}.`); hub?.broadcastState();
+  };
   director.settings.lightMode = defaultLight;
   if (fake) director.source = 'simulated';
   if (fake) director.state.streamId = `simulated-${director.state.streamId}`;
@@ -74,7 +107,7 @@ export async function createApp(production = false) {
     if (!message || typeof message !== 'object') return;
     if (message.type === 'twitch') {
       if (message.action === 'clear' || message.action === 'blocklist') hub.broadcast({ type: 'stop' });
-      void twitch?.handle(message).catch(error => hub.notice(error instanceof Error ? error.message : 'Twitch control failed'));
+      void twitch?.handle(message).then(() => { if (message.action === 'mode') savePrefs(); }).catch(error => hub.notice(error instanceof Error ? error.message : 'Twitch control failed'));
       return;
     }
     if (message.type === 'settings' && message.settings && typeof message.settings === 'object') {
@@ -95,11 +128,14 @@ export async function createApp(production = false) {
         }
         void refreshHealth();
       }
-      hub.broadcastState();
+      savePrefs(); hub.broadcastState();
     } else if (message.type === 'frame' && typeof message.jpeg === 'string' && message.jpeg.length < 1_800_000) {
       const bytes = Buffer.from(message.jpeg.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
       if (bytes[0] === 0xff && bytes[1] === 0xd8 && !(obs.status.connected && Date.now() - obs.status.lastFrameAt < 5000)) { director.frame = bytes; director.frameAt = Date.now(); }
-    } else if (message.type === 'transcript' && typeof message.text === 'string' && typeof message.at === 'number' && Number.isFinite(message.at)) director.addTranscript(message.text, message.at);
+    } else if (message.type === 'transcript' && typeof message.text === 'string' && typeof message.at === 'number' && Number.isFinite(message.at)) {
+      director.addTranscript(message.text, message.at);
+      if (director.settings.running && !fake && message.text.trim()) void store.appendTranscript(director.state.streamId, { at: Date.now(), text: message.text.trim().slice(0, 2000) }).catch(() => undefined);
+    }
     else if (message.type === 'mic' && typeof message.active === 'boolean') { director.mic = message.active; hub.broadcastState(); }
     else if (message.type === 'skip') { runner.cancel(); hub.broadcast({ type: 'stop' }); }
     else if (message.type === 'warm') void warm();
@@ -166,6 +202,8 @@ export async function createApp(production = false) {
     } catch (error) { if (!response.headersSent) response.writeHead(error instanceof URIError ? 400 : (error as NodeJS.ErrnoException).code === 'ENOENT' ? 404 : 500); response.end(); }
   });
   twitch = new TwitchService(director, ai.screen, () => { hub.broadcastState(); refreshEmotes(); }, text => hub.notice(text), fake);
+  if (prefs.twistMode === 'approve' || prefs.twistMode === 'auto') twitch.router.mode = prefs.twistMode;
+  if (typeof prefs.modsOnly === 'boolean') twitch.router.modsOnly = prefs.modsOnly;
   hub = new Hub(server, key, state, onMessage);
   void twitch.startSaved().catch(error => hub.notice(String(error))).finally(refreshEmotes);
   if (!fake) obs.start();

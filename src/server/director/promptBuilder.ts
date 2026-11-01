@@ -24,10 +24,11 @@ export function buildPrompt(input: PromptInput, budget = config.limits.promptCha
     input.settings.genre === 'unhinged'
       ? `- Write it like one chat message: lowercase (emote words keep their case), present tense is fine, 6 to 16 words, punchline last. Call the streamer ${input.settings.protagonist.toLowerCase()} or he/she/they. At most two emote words. No hashtags, no quotes around the line.`
       : `- One or two short sentences, 8 to 18 words total. Past tense, third person. Punchline last. Call the streamer ${input.settings.protagonist} or he/she/they, never "the protagonist".`,
-    '- Build the joke from what the streamer JUST SAID (quote or twist their own words) or one concrete thing in the scene. Irony, exaggeration, deadpan contrast between what they claimed and what happened.',
+    '- Build the joke from what the streamer JUST SAID or one concrete thing in the scene. Irony, exaggeration, deadpan contrast between what they claimed and what happened.',
+    '- Speech comes from live speech-to-text and may be garbled: react to its meaning, quote at most three of their words, and ignore phrases that make no sense. Never comment on silence or on the streamer not talking.',
     '- Commentary, metaphor and judgement are encouraged. Never invent events, items or outcomes that are not in the input.',
     '- The genre voice must be unmistakable: a listener should name the genre from one line.',
-    '- TALK-BACK means the streamer spoke to you: answer them directly in character, a little smug, still in third person about them. RECAP means exactly two short sentences telling the story so far.',
+    '- TALK-BACK means the streamer spoke to you: answer them directly in character, a little smug, still in third person about them. They call you "Narrator"; that is you, never another character. RECAP means exactly two short sentences telling the story so far.',
     '- Roast only the streamer at the given roast level (0 affectionate, 3 merciless but never cruel); never viewers, never identity or appearance.',
     '- Never name the game unless the streamer named it. Never imitate real people. Do not repeat a recent line.',
     '- A PLOT TWIST, when given, must land in this line as if it were always true, and usedTwistId must equal its id; otherwise usedTwistId is empty.',
@@ -46,19 +47,22 @@ export function buildPrompt(input: PromptInput, budget = config.limits.promptCha
   };
   const encode = () => input.model.includes('gpt-oss') ? JSON.stringify(context) : [
     `TRIGGER: ${input.trigger} · ROAST LEVEL ${input.settings.spice}/3`,
-    `STREAMER JUST SAID: ${context.transcript.at(-1) ? `"${context.transcript.at(-1)}"` : '(nothing; roast the silence or the scene)'}`,
+    context.acceptedTwist ? `PLOT TWIST TO REVEAL NOW (id ${context.acceptedTwist.id}) from @${context.acceptedTwist.author}: "${context.acceptedTwist.text}"` : '',
+    `STREAMER JUST SAID: ${context.transcript.at(-1) ? `"${context.transcript.at(-1)}"` : '(nothing new; react to the scene)'}`,
     context.transcript.length > 1 ? `EARLIER THEY SAID: ${context.transcript.slice(0, -1).slice(-4).map(t => `"${t}"`).join(' / ')}` : '',
     `SCENE (from a screenshot): ${context.caption || '(no screen yet)'}`,
     context.events.some(e => e.kind !== 'hype') ? `TWITCH EVENTS: ${context.events.filter(e => e.kind !== 'hype').map(e => `${e.kind} by @${e.author}${e.detail ? ` (${e.detail})` : ''}`).join('; ')}` : '',
     context.events.some(e => e.kind === 'hype') ? `CHAT REACTION: ${context.events.filter(e => e.kind === 'hype').map(e => e.detail).join('; ')}. Your line MUST be about chat's reaction to ${input.settings.protagonist} (chat laughed, paid respects, wants a clip...).` : '',
-    context.acceptedTwist ? `PLOT TWIST (id ${context.acceptedTwist.id}) from @${context.acceptedTwist.author}: ${context.acceptedTwist.text}` : '',
     context.canon.length ? `CANON SO FAR: ${context.canon.map(t => `${t.text} (@${t.author})`).join('; ')}` : '',
     context.cast.length ? `CAST: ${context.cast.map(([name, role]) => `${name} = ${role}`).join('; ')}` : '',
     context.summary ? `STORY SO FAR: ${context.summary}` : '',
     context.chapterTitle ? `CURRENT CHAPTER: ${context.chapterTitle}` : '',
+    input.state.beatCount === 0 && input.trigger === 'cadence' ? `OPENING: this is the first line of a new episode. Introduce ${input.settings.protagonist} and the scene, in genre.` : '',
     input.settings.genre === 'unhinged' ? `SLANG TO TRY THIS TIME (pick one, do not start the line with it): ${hints}` : '',
     // Recent lines are deliberately omitted: gemma copies whatever lines it is shown. The writer rejects exact repeats instead.
-    'Your line must react to what the streamer just said, if they said anything.'
+    context.acceptedTwist ? `Your line MUST reveal the plot twist (${context.acceptedTwist.text}) as if it were always true, using its key words.`
+      : input.trigger === 'recap' ? 'Your line MUST recap the episode so far in two short sentences: what the streamer did, any plot twist, and how chat reacted.'
+      : 'Your line must react to what the streamer just said, if they said anything.'
   ].filter(Boolean).join('\n');
   // Gemma-family models get examples inline in the system prompt; fake example turns made them copy scene structure.
   const examples = input.model.includes('gpt-oss') ? preset.examples.map((line, i) => ({ line, scene: preset.exampleScenes?.[i] ?? line })).slice(0, input.settings.lightMode ? 2 : 6) : [];
@@ -70,5 +74,5 @@ export function buildPrompt(input: PromptInput, budget = config.limits.promptCha
   while (system.length + user.length + examplesSize > budget && context.cast.length) { context.cast.shift(); user = encode(); }
   while (system.length + user.length + examplesSize > budget && context.recentLines.length > 1) { context.recentLines = context.recentLines.slice(1); user = encode(); }
   if (system.length + user.length + examplesSize > budget) throw new Error('Narration context exceeded prompt budget');
-  return { system, user, model: input.model, examples, ...(input.twist ? { twistId: input.twist.id } : {}), allowCast: !!(input.events.length || input.twist || Object.keys(input.state.cast).length), recentLines: [...input.state.recentLines], recap: input.trigger === 'recap', chatStyle: input.settings.genre === 'unhinged' };
+  return { system, user, model: input.model, examples, ...(input.twist ? { twistId: input.twist.id, twistText: input.twist.text } : {}), allowCast: !!(input.events.length || input.twist || Object.keys(input.state.cast).length), recentLines: [...input.state.recentLines], recap: input.trigger === 'recap', chatStyle: input.settings.genre === 'unhinged', maxWords: input.trigger === 'recap' ? 30 : 20 };
 }

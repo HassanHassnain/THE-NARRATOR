@@ -8,6 +8,8 @@ const twitchGlobals = ['LUL', 'Kappa', 'PogChamp', 'BibleThump', 'WutFace', 'Not
 /** name → image URL. Shared by the overlay (images) and the voice (emote words are not spoken). */
 export const emoteMap = new Map<string, string>();
 const silent = new Set([...coreEmotes, ...twitchGlobals].map(n => n.toLowerCase()));
+// Chat shorthand stays on screen but not in the voice: Kokoro read "L" as "capital L" and "LMAOOO" as "el mal".
+const shorthand = /^(?:L+|W+|lmf?ao+|LMF?AO+)$/u;
 
 /** Small models lowercase emote words ("sadge"); restore their real spelling so the overlay can show the image. */
 export function fixEmoteCase(line: string) {
@@ -21,7 +23,7 @@ export function fixEmoteCase(line: string) {
 export function stripEmotes(line: string) {
   const spoken = line.split(/\s+/u).filter(word => {
     const bare = word.replace(/[.,!?…]+$/u, '');
-    return !(silent.has(bare.toLowerCase()) || emoteMap.has(bare));
+    return !(silent.has(bare.toLowerCase()) || emoteMap.has(bare) || shorthand.test(bare));
   }).join(' ').replace(/\s+([.,!?…])/gu, '$1').replace(/[,;:]+$/u, '').trim();
   return spoken;
 }

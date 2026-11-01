@@ -43,13 +43,15 @@ export class BeatRunner {
       if (input.frame) {
         const hash = createHash('sha256').update(input.frame).digest('hex');
         // A background caption up to 30 s old is good enough; waiting 4–5 s for a fresh one made beats time out.
-        if (this.captionCache && (this.captionCache.hash === hash || Date.now() - this.captionCache.at < 30000)) caption = this.captionCache.text;
-        else {
+        // Recaps and replies to the streamer are about the story and the speech, so any cached caption will do.
+        const reuse = input.trigger === 'recap' || input.trigger === 'talk-back';
+        if (this.captionCache && (this.captionCache.hash === hash || Date.now() - this.captionCache.at < 30000 || reuse)) caption = this.captionCache.text;
+        else if (input.trigger !== 'recap') {
           const result = await this.ai.eyes.caption(input.frame, signal); signal.throwIfAborted();
           caption = result.value; latency.eyes = result.latencyMs; this.captionCache = { hash, text: caption, at: Date.now() };
         }
       }
-      if (!caption && !input.transcript.length && !input.events.length && !input.twist) throw new Error('Share a screen or provide a transcript before narrating');
+      if (!caption && !input.transcript.length && !input.events.length && !input.twist && input.trigger !== 'recap') throw new Error('Share a screen or provide a transcript before narrating');
       stage = 'writer'; stageStarted = performance.now();
       const request = buildPrompt({ ...input, caption, model: input.settings.lightMode ? eyesModel() : writerModel() });
       const result = await this.ai.writer.write(request, signal); signal.throwIfAborted();

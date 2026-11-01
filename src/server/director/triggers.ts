@@ -1,5 +1,9 @@
 import type { Settings, StoryEvent, Transcript, Trigger, Twist } from '../../shared/protocol.js';
-export const wakeWord = (text: string) => /\b(?:narrat(?:or|er|ar)|narator|nerator)\b/iu.test(text);
+// Speech-to-text often hears "narrator" as "Nader" with South Asian and other accents.
+const wakeVariants = String.raw`\b(?:narrat(?:or|er|ar)|narator|nerator|naretor|narater|narrador|nader|nadir|nadar)\b`;
+export const wakeWord = (text: string) => new RegExp(wakeVariants, 'iu').test(text);
+/** Misheard spellings become "Narrator", so the writer never addresses the streamer as "Nader". */
+export const normalizeWakeWord = (text: string) => text.replace(new RegExp(wakeVariants, 'giu'), 'Narrator');
 const priority: StoryEvent['kind'][] = ['raid', 'gift', 'sub', 'cheer', 'follow', 'hype'];
 export interface TriggerInput {
   now: number; lastAttempt: number; inFlight: boolean; settings: Settings;

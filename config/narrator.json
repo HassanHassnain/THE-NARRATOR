@@ -217,7 +217,7 @@
     "summaryWords": 120,
     "summaryEveryBeats": 5,
     "recentLines": 6,
-    "beatTimeoutMs": 15000,
+    "beatTimeoutMs": 30000,
     "invalidJsonRetries": 1,
     "concurrentBeats": 1,
     "promptCharacters": 12000,
@@ -232,7 +232,9 @@
     "transcriptSpikeWindowSeconds": 10,
     "frameWidthPixels": 768,
     "spiceMin": 0,
-    "spiceMax": 3
+    "spiceMax": 3,
+    "chatPulseWindowSeconds": 12,
+    "chatPulseSoloMessages": 3
   },
   "twistMode": "approve",
   "blocklist": [

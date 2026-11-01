@@ -1,6 +1,6 @@
 import type { Settings, StoryEvent, Transcript, Twist } from '../../shared/protocol.js';
 import { createStory } from './storyState.js';
-import { selectTrigger } from './triggers.js';
+import { normalizeWakeWord, selectTrigger } from './triggers.js';
 import type { BeatRunner } from './beatRunner.js';
 export class Director {
   state = createStory();
@@ -11,8 +11,17 @@ export class Director {
   private lastAttempt = Date.now();
   private lastPrecaption = 0;
   constructor(readonly runner: BeatRunner) {}
+  /** Starts a fresh story (new stream id, empty canon and queues) with the current settings. */
+  newEpisode() {
+    this.runner.cancel();
+    this.state = createStory(this.settings.protagonist, this.settings.genre);
+    this.transcript = []; this.events = []; this.twists = []; this.recap = false;
+    // Open the episode within a few seconds instead of after a full cadence interval.
+    this.lastAttempt = Date.now() - this.settings.cadenceSeconds * 1000 + 4000;
+    return this.state.streamId;
+  }
   addTranscript(text: string, at = Date.now()) {
-    const clean = text.trim().slice(0, 2000); if (!clean) return;
+    const clean = normalizeWakeWord(text.trim().slice(0, 2000)); if (!clean) return;
     this.transcript.push({ text: clean, at: Math.min(Date.now(), Math.max(Date.now() - 60000, at)) });
     this.transcript = this.transcript.slice(-30);
     void this.tick();

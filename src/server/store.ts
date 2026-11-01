@@ -1,4 +1,4 @@
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises';
+import { appendFile, mkdir, readFile, rename, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import type { Beat } from '../shared/protocol.js';
 export interface BeatStore { saveSummary?(streamId: string, summary: { atBeat: number; text: string; latencyMs: number; method: string }): Promise<void>; save(beat: Beat, frame: Buffer | undefined, audio: Buffer, signal: AbortSignal): Promise<void> }
@@ -20,6 +20,18 @@ export class FileStore implements BeatStore {
     const file = join(this.root, streamId, 'summary.json');
     await writeFile(file + '.tmp', JSON.stringify(summary, null, 2));
     await rename(file + '.tmp', file);
+  }
+  /** Links an OBS recording file to its episode so takes can be cut from beat timestamps. */
+  async saveRecording(streamId: string, recording: { outputPath: string; startedAt: number }) {
+    if (!/^[\w-]{1,100}$/.test(streamId)) throw new Error('Invalid stream id');
+    await mkdir(join(this.root, streamId), { recursive: true });
+    await writeFile(join(this.root, streamId, 'recording.json'), JSON.stringify(recording, null, 2));
+  }
+  /** What the streamer said during an episode, for editing and captions; stays on this machine. */
+  async appendTranscript(streamId: string, line: { at: number; text: string }) {
+    if (!/^[\w-]{1,100}$/.test(streamId)) throw new Error('Invalid stream id');
+    await mkdir(join(this.root, streamId), { recursive: true });
+    await appendFile(join(this.root, streamId, 'transcript.jsonl'), JSON.stringify(line) + '\n');
   }
   async read(streamId: string): Promise<Beat[]> {
     if (!/^[\w-]{1,100}$/.test(streamId)) throw new Error('Invalid stream id');

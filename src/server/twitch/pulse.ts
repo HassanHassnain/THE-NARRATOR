@@ -36,12 +36,13 @@ export function reactionOf(text: string): { token: string; mood: Mood } | undefi
 
 /**
  * Turns bursts of chat reactions (emote spam, meme phrases) into a story event.
- * Tuned for small chats: 3 reaction messages from 2+ chatters, or 5 from anyone, within 10 s.
+ * Tuned for small chats: 3 reaction messages from 2+ chatters, or `soloMessages` from anyone, within the window.
  */
 export class ChatPulse {
   private window: { at: number; author: string; token: string; mood: Mood }[] = [];
   private lastFired = -Infinity;
-  constructor(private fire: (event: StoryEvent) => void, private windowMs = 10000, private cooldownMs = 25000) {}
+  constructor(private fire: (event: StoryEvent) => void, private windowMs = 10000, private cooldownMs = 25000, private soloMessages = 5) {}
+  reset() { this.window = []; this.lastFired = -Infinity; }
   add(message: Pick<ChatMessage, 'authorId' | 'text'>, now = Date.now()) {
     const reaction = reactionOf(message.text); if (!reaction) return;
     this.window = this.window.filter(r => now - r.at <= this.windowMs);
@@ -49,7 +50,7 @@ export class ChatPulse {
     this.window = this.window.slice(-100);
     if (now - this.lastFired < this.cooldownMs) return;
     const chatters = new Set(this.window.map(r => r.author)).size;
-    if (!((this.window.length >= 3 && chatters >= 2) || this.window.length >= 5)) return;
+    if (!((this.window.length >= 3 && chatters >= 2) || this.window.length >= this.soloMessages)) return;
     const tokens = new Map<string, number>(); const moods = new Map<Mood, number>();
     for (const r of this.window) { tokens.set(r.token, (tokens.get(r.token) ?? 0) + 1); moods.set(r.mood, (moods.get(r.mood) ?? 0) + 1); }
     const mood = [...moods].sort((a, b) => b[1] - a[1])[0]![0];

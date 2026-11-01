@@ -7,7 +7,7 @@ import { join } from 'node:path';
 import WebSocket from 'ws';
 import { ObsFrames } from '../src/server/obsFrames';
 import { stableOverlayKey } from '../src/server/overlayKey';
-import { LocalWriter, parseNarration } from '../src/server/ai/writer';
+import { LocalWriter, mentionsTwist, parseNarration } from '../src/server/ai/writer';
 import { FakeEyes, FakeWriter, FakeTTS, FakeScreen } from '../src/server/ai/fakes';
 import { BeatRunner } from '../src/server/director/beatRunner';
 import { Director } from '../src/server/director';
@@ -37,7 +37,7 @@ it('OBS authenticates v5 and requests only the configured 768px JPEG source', as
   try {
     s.message({ op: 0, d: { authentication: { salt: 'salt', challenge: 'challenge' } } });
     const h = (v: string) => createHash('sha256').update(v).digest('base64');
-    expect(JSON.parse(s.send.mock.calls[0]![0]).d).toEqual({ rpcVersion: 1, eventSubscriptions: 0, authentication: h(h('secretsalt') + 'challenge') });
+    expect(JSON.parse(s.send.mock.calls[0]![0]).d).toEqual({ rpcVersion: 1, eventSubscriptions: 64, authentication: h(h('secretsalt') + 'challenge') });
     s.message({ op: 2, d: {} }); const request = JSON.parse(s.send.mock.calls[1]![0]);
     expect(request.d.requestData).toMatchObject({ sourceName: 'Game', imageWidth: 768, imageFormat: 'jpg' });
     const bytes = Buffer.from([255, 216, 255, 217]);
@@ -45,6 +45,17 @@ it('OBS authenticates v5 and requests only the configured 768px JPEG source', as
     await flush(); expect(frame).toHaveBeenCalledWith(bytes); expect(obs.status.connected).toBe(true);
   } finally { obs.close(); }
   expect(vi.getTimerCount()).toBe(0);
+});
+it('OBS reports when recording starts, with the output file, and when it stops', () => {
+  const { obs, sockets } = obsSetup(); const s = sockets[0]!; const started = vi.fn(), stopped = vi.fn(); obs.onRecordStart = started; obs.onRecordStop = stopped;
+  try {
+    s.message({ op: 0, d: {} }); s.message({ op: 2, d: {} });
+    s.message({ op: 5, d: { eventType: 'RecordStateChanged', eventData: { outputActive: false, outputState: 'OBS_WEBSOCKET_OUTPUT_STARTING' } } });
+    s.message({ op: 5, d: { eventType: 'RecordStateChanged', eventData: { outputActive: true, outputState: 'OBS_WEBSOCKET_OUTPUT_STARTED', outputPath: '/Movies/take.mp4' } } });
+    expect(started).toHaveBeenCalledExactlyOnceWith('/Movies/take.mp4'); expect(stopped).not.toHaveBeenCalled();
+    s.message({ op: 5, d: { eventType: 'RecordStateChanged', eventData: { outputActive: false, outputState: 'OBS_WEBSOCKET_OUTPUT_STOPPED', outputPath: '/Movies/take.mp4' } } });
+    expect(stopped).toHaveBeenCalledOnce();
+  } finally { obs.close(); }
 });
 it('OBS ignores malformed payloads, times out, reconnects and cancels pending work on close', async () => {
   vi.useFakeTimers(); const { obs, sockets, frame } = obsSetup(); const s = sockets[0]!;
@@ -78,6 +89,14 @@ it('compact writer accepts explicit twist acknowledgement and discards model-inv
   const complete = vi.fn(async () => JSON.stringify({ line: 'The cat owned the vault.', chapterTitle: 'Vault', usedTwistId: 'accepted', castUpdates: [{ name: 'unsafe', role: 'invented' }] }));
   const result = await new LocalWriter({ complete }).write({ model: 'gemma3:4b', system: '', user: '', twistId: 'accepted' }, AbortSignal.timeout(1000));
   expect(result.value.usedTwistId).toBe('accepted'); expect(result.value.castUpdates).toEqual([]);
+});
+it('twist lines must actually use the twist, not just acknowledge its id', async () => {
+  const request = { model: 'gemma3:4b', system: '', user: '', twistId: 'accepted', twistText: 'the sheep are planning a coup' };
+  const ignored = vi.fn(async () => JSON.stringify({ line: 'Actual npc behavior, repeating buzzwords.', chapterTitle: '', usedTwistId: 'accepted' }));
+  await expect(new LocalWriter({ complete: ignored }).write(request, AbortSignal.timeout(1000))).rejects.toThrow('plot twist');
+  const used = vi.fn(async () => JSON.stringify({ line: 'The sheep were plotting a coup all along.', chapterTitle: '', usedTwistId: 'accepted' }));
+  expect((await new LocalWriter({ complete: used }).write(request, AbortSignal.timeout(1000))).value.line).toContain('sheep');
+  expect(mentionsTwist('He changed the ending himself.', 'change the ending')).toBe(true);
 });
 it('chat style permits short emote endings while ordinary truncated output is rejected', () => {
   expect(parseNarration('{"line":"The key went swimming Sadge","castUpdates":[]}', true).line).toContain('Sadge');
