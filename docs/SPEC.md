@@ -34,7 +34,7 @@ It runs entirely on the streamer's own computer: no API keys, no per-hour cost, 
 ## Chat commands
 | Command | Effect | Rules |
 |---|---|---|
-| `!genre <name>` | Switches the genre at the next beat | Genres: noir, nature, epic, sports, horror, heist. Cooldown 3 min. With ≥ 3 distinct voters within 30 s, the majority wins. |
+| `!genre <name>` | Switches the genre at the next beat | Genres: noir, nature, epic, sports, horror, heist, unhinged. Cooldown 1 min. With ≥ 3 distinct voters within 30 s, the majority wins. |
 | `!twist <text>` | Proposes a plot twist (≤ 120 chars) | The blocklist runs first, then the writer model screens it (JSON: allow / reject + reason). Default mode is **approve on `/host`**. Auto-accept can be switched on, optionally for mods/VIPs only. Accepted twists queue (max 3). One twist per chatter every 2 min. |
 | `!recap` | The narrator gives a two-sentence "story so far" | Cooldown 2 min. |
 

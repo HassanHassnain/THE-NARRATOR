@@ -1,30 +1,81 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>THE NARRATOR · Host</title></head>
-<body><main>
-<header><div><p class="eyebrow">THE NARRATOR</p><h1>Control room</h1></div><p id="connection" role="status">Connecting…</p></header>
-<p id="simulated" hidden>SIMULATED AI — TEST MODE</p>
-<p id="notice" role="status" aria-live="polite">Share a window, enable your mic, then start the narrator.</p>
-<section aria-label="Setup"><h2>Get ready</h2><ul id="checklist"></ul><button id="warm">Load local models &amp; voice</button><pre id="fixes"></pre></section>
-<section class="workspace"><div>
-<h2>Your stream</h2><label>Protagonist <input id="protagonist" value="Streamer" maxlength="80"></label>
-<div class="row"><button id="capture">Share game window</button><button id="mic">Enable microphone</button></div>
-<video id="preview" muted autoplay playsinline aria-label="Shared window preview"></video>
-<label>Genre <select id="genre"><option>noir</option><option>nature</option><option>epic</option><option>sports</option><option>horror</option><option>heist</option></select></label>
-<label>Cadence <output id="cadenceValue">35 s</output><input id="cadence" type="range" min="15" max="90" value="35"></label>
-<label>Spice <output id="spiceValue">1</output><input id="spice" type="range" min="0" max="3" value="1"></label>
-<label class="check"><input id="light" type="checkbox"> Light mode · use one model</label>
-<div class="row"><button id="running" class="primary">Start narrator</button><button id="mute" class="large" aria-pressed="false">Mute (M)</button><button id="skip" class="large">Skip (S)</button></div>
-<p><a id="overlay" target="_blank" rel="noopener">Open overlay</a> · <a id="episode" target="_blank" rel="noopener">Open episode</a></p>
-<details><summary>Transcript fallback</summary><p>For browsers without speech recognition, type what you said. Include “narrator” for an immediate reply.</p><form id="transcriptForm"><input id="transcript" aria-label="Transcript" maxlength="2000" placeholder="Narrator, why did I miss that red door?"><button>Send transcript</button></form></details>
-<p id="speechStatus" aria-live="polite">Microphone off</p>
-</div><div class="log"><h2>Beat log</h2><p>Eyes / writer / voice / total · milliseconds</p><ol id="logs" aria-live="polite"></ol></div></section>
-<section aria-label="Twitch"><h2>Chat writes the plot</h2>
-<p id="twitchStatus">Twitch disconnected · local narration works without Twitch.</p>
-<label>Channel name <input id="channel" maxlength="25" placeholder="your_channel"></label>
-<div class="row"><button id="readChat">Read chat anonymously</button><button id="authTwitch">Connect with Twitch</button><button id="stopChat">Stop chat &amp; events</button></div>
-<p id="twitchSetup"></p><div id="device" hidden><p>Open <a href="https://www.twitch.tv/activate" target="_blank" rel="noopener">twitch.tv/activate</a> and enter <strong id="deviceCode"></strong>. Authorize your broadcaster account.</p></div>
-<div class="row"><label>Twist mode <select id="twistMode"><option value="approve">Approve on host</option><option value="auto">Auto-accept screened twists</option></select></label><label class="check"><input id="modsOnly" type="checkbox"> Auto-accept only mods / VIPs</label><button id="clearTwists">Clear twist queue</button></div>
-<p id="acceptedTwists"></p><ul id="pendingTwists"></ul>
-<details><summary>Edit banned words</summary><p>One word or phrase per line. Applies to viewer input and the final voice check for this run.</p><textarea id="blocklist" rows="5" aria-label="Banned words"></textarea><button id="saveBlocklist">Apply banned words</button></details>
-<details><summary>Twitch notices</summary><ol id="twitchNotices"></ol></details>
-</section></main><script type="module" src="./main.ts"></script></body></html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>THE NARRATOR · Control room</title></head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="mark" aria-hidden="true">❝</span><div><p class="eyebrow">The Narrator</p><h1>Control room</h1></div></div>
+  <div class="status">
+    <p id="connection" role="status">Connecting…</p>
+    <span id="onair" class="tally" aria-live="polite">Off air</span>
+  </div>
+</header>
+<p id="simulated" class="banner" hidden>SIMULATED AI — TEST MODE</p>
+<main>
+  <section class="setup" aria-label="Setup">
+    <ul id="checklist" aria-label="Setup checklist"></ul>
+    <button id="warm">Load local models &amp; voice</button>
+  </section>
+  <pre id="fixes"></pre>
+  <p id="notice" role="status" aria-live="polite">Share a window, enable your mic, then start the narrator.</p>
+
+  <div class="grid">
+    <section class="desk panel" aria-label="Your stream">
+      <div class="screen" id="screen">
+        <img id="eyes" alt="What the narrator sees" hidden>
+        <video id="preview" muted autoplay playsinline aria-label="Shared window preview"></video>
+        <p class="screen-empty">The narrator can’t see anything yet</p>
+        <span id="eyesSource" class="eyes-source"></span>
+      </div>
+      <div class="row two"><button id="mic" class="primary-soft">Enable microphone</button><button id="capture">Share a window instead</button></div>
+      <p id="speechStatus" class="speech" aria-live="polite">Microphone off</p>
+
+      <label class="field">Protagonist <input id="protagonist" value="Streamer" maxlength="80"></label>
+
+      <div class="field"><span class="label">Genre</span>
+        <div id="genreTiles" class="tiles" role="radiogroup" aria-label="Genre"></div>
+        <select id="genre" class="visually-hidden" tabindex="-1" aria-hidden="true"><option>noir</option><option>nature</option><option>epic</option><option>sports</option><option>horror</option><option>heist</option></select>
+      </div>
+
+      <div class="sliders">
+        <label class="field">Cadence <output id="cadenceValue">35 s</output><input id="cadence" type="range" min="15" max="90" value="35"></label>
+        <label class="field">Roast level <output id="spiceValue">1</output><input id="spice" type="range" min="0" max="3" value="1"></label>
+      </div>
+      <label class="check"><input id="light" type="checkbox"> Light mode <small>smaller model for heavy games</small></label>
+
+      <button id="running" class="primary go">Start narrator</button>
+      <div class="row two"><button id="mute" class="large" aria-pressed="false">Mute</button><button id="skip" class="large">Skip <kbd>S</kbd></button></div>
+      <p class="links"><a id="overlay" target="_blank" rel="noopener">Open overlay ↗</a><a id="episode" target="_blank" rel="noopener">Open episode ↗</a></p>
+      <details><summary>Transcript fallback</summary><p>For browsers without speech recognition, type what you said. Include “narrator” for an immediate reply.</p><form id="transcriptForm"><input id="transcript" aria-label="Transcript" maxlength="2000" placeholder="Narrator, why did I miss that red door?"><button>Send</button></form></details>
+    </section>
+
+    <div class="stage">
+      <section class="now panel" aria-label="Now narrating">
+        <p class="eyebrow">Last line on air</p>
+        <blockquote id="nowLine">The narrator is waiting for something worth saying.</blockquote>
+        <p id="nowMeta" class="meta"></p>
+      </section>
+      <section class="log panel" aria-label="Beat log">
+        <div class="panel-head"><h2>Beat log</h2><span class="meta">see · write · voice</span></div>
+        <ol id="logs" aria-live="polite"></ol>
+      </section>
+    </div>
+
+    <section class="chat panel" aria-label="Twitch">
+      <div class="panel-head"><h2>Chat writes the plot</h2></div>
+      <p id="twitchStatus" class="meta">Twitch disconnected · local narration works without Twitch.</p>
+      <label class="field">Channel name <input id="channel" maxlength="25" placeholder="your_channel"></label>
+      <div class="row"><button id="authTwitch" class="twitch">Connect with Twitch</button><button id="readChat">Read chat anonymously</button><button id="stopChat" class="ghost">Stop</button></div>
+      <p id="twitchSetup" class="meta"></p>
+      <div id="device" class="device" hidden><p>Open <a href="https://www.twitch.tv/activate" target="_blank" rel="noopener">twitch.tv/activate</a> and enter</p><strong id="deviceCode"></strong><p>Authorize your broadcaster account.</p></div>
+
+      <h3>Plot twists</h3>
+      <label class="field">Mode <select id="twistMode"><option value="approve">Approve on host</option><option value="auto">Auto-accept screened twists</option></select></label>
+      <label class="check"><input id="modsOnly" type="checkbox"> Auto-accept only mods / VIPs</label>
+      <p id="acceptedTwists" class="meta"></p>
+      <ul id="pendingTwists"></ul>
+      <button id="clearTwists" class="ghost">Clear twist queue</button>
+      <details><summary>Edit banned words</summary><p>One word or phrase per line. Applies to viewer input and the final voice check for this run.</p><textarea id="blocklist" rows="5" aria-label="Banned words"></textarea><button id="saveBlocklist">Apply banned words</button></details>
+      <details><summary>Twitch notices</summary><ol id="twitchNotices"></ol></details>
+    </section>
+  </div>
+</main>
+<script type="module" src="/host/main.ts"></script></body></html>

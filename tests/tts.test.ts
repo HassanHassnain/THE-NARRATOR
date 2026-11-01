@@ -45,3 +45,16 @@ describe('local TTS wrapper with fake processes', () => {
     } finally { tts.close(); }
   });
 });
+describe('reviewed speech budget boundary', () => {
+  it.skipIf(process.platform !== 'darwin').each([[1899, 'say'], [1900, 'kokoro']] as const)('uses %s ms budget without forcing an unnecessary voice fallback', async (budget, engine) => {
+    worker('ok');
+    mocks.execFile.mockImplementation((_command: string, args: string[], _options: unknown, callback: (error: Error | null, stdout: string, stderr: string) => void) => {
+      if (!args.includes('-o')) queueMicrotask(() => callback(null, 'Samantha en_US Test voice', ''));
+      else void writeFile(args[args.indexOf('-o')+1]!, wavSample()).then(() => callback(null, '', ''));
+      return new EventEmitter();
+    });
+    const tts = new LocalTTS();
+    try { await tts.ready(); expect((await tts.speak('The red door stayed shut.', 'noir', new AbortController().signal, budget)).value.engine).toBe(engine); }
+    finally { tts.close(); }
+  });
+});

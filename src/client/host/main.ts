@@ -11,7 +11,7 @@ const socket = connect('host', message => {
 }, open => { el('connection').textContent = open ? 'Control room connected' : 'Reconnecting…'; });
 const settings = (value: Partial<Settings>) => socket.send({ type: 'settings', settings: value });
 function render(s: PublicState) {
-  const checks: [string, boolean][] = [['Ollama running', s.health.ollama], ['Models installed', s.health.ollama && !s.health.missing.length], ['Voice ready', s.voice.ready], ['Screen shared', !!capture && capture.active], ['Microphone on', s.mic], ['Overlay connected', s.overlays > 0], ['Twitch connected', s.twitch.chatConnected]];
+  const checks: [string, boolean][] = [['Ollama running', s.health.ollama], ['Models installed', s.health.ollama && !s.health.missing.length], ['Voice ready', s.voice.ready], ['Narrator can see', Date.now() - s.frameAt < 5000], ['Microphone on', s.mic], ['Overlay connected', s.overlays > 0], ['Twitch connected', s.twitch.chatConnected]];
   el('checklist').replaceChildren(...checks.map(([label, ready]) => { const li = document.createElement('li'); li.className = ready ? 'ready' : 'pending'; li.textContent = `${ready ? '✓' : '○'} ${label}`; return li; }));
   el('fixes').textContent = [...s.health.fixes, s.voice.error ?? ''].filter(Boolean).join('\n');
   el<HTMLAnchorElement>('overlay').href = `/overlay?key=${encodeURIComponent(s.overlayKey)}`;
@@ -21,7 +21,7 @@ function render(s: PublicState) {
   input('light').checked = s.settings.lightMode;
   button('running').textContent = s.settings.running ? 'Stop narrator' : 'Start narrator';
   button('running').disabled = !s.settings.running && (!s.voice.ready || !s.health.ollama || s.health.missing.length > 0);
-  button('mute').textContent = s.settings.muted ? 'Unmute (M)' : 'Mute (M)'; button('mute').setAttribute('aria-pressed', String(s.settings.muted));
+  button('mute').setAttribute('aria-pressed', String(s.settings.muted));
   const t = s.twitch;
   el('twitchStatus').textContent = `${t.channel ? '#' + t.channel : 'No channel'} · chat ${t.chatConnected ? 'connected' : 'disconnected'} · events ${t.eventsConnected ? 'connected' : 'disconnected'}${t.user ? ' · authorized as ' + t.user.login : ''}`;
   el('twitchSetup').textContent = t.clientConfigured ? 'Authorize to receive follows, subscriptions, cheers and raids on your channel.' : 'For events: set TWITCH_CLIENT_ID for a Public app in .env, restart, then Connect with Twitch. Anonymous chat needs no client ID.';
@@ -38,13 +38,46 @@ function render(s: PublicState) {
   el('twitchNotices').replaceChildren(...t.notices.map(notice => { const li = document.createElement('li'); li.textContent = notice; return li; }));
   el('logs').replaceChildren(...s.logs.map(log => {
     const li = document.createElement('li'); li.className = log.status;
-    const meta = document.createElement('small'); meta.textContent = `${new Date(log.at).toLocaleTimeString()} · ${log.trigger} · ${log.status}`;
+    const head = document.createElement('div'); head.className = 'head';
+    const trigger = document.createElement('span'); trigger.className = 'trigger'; trigger.textContent = log.trigger;
+    const when = document.createElement('span'); when.textContent = `${new Date(log.at).toLocaleTimeString()} · ${(log.latency.total / 1000).toFixed(1)} s`;
+    head.append(trigger, when);
     const line = document.createElement('strong'); line.textContent = log.status === 'spoken' ? log.line : log.reason ?? 'Skipped';
-    const caption = document.createElement('small'); caption.textContent = `Scene: ${log.caption || 'No caption'}`;
-    const timing = document.createElement('small'); timing.textContent = `${log.latency.eyes} / ${log.latency.writer} / ${log.latency.tts} / ${log.latency.total} ms · ${log.engine ?? 'no audio'}`;
-    li.append(meta, line, caption, timing); return li;
+    const caption = document.createElement('small'); caption.className = 'scene'; caption.textContent = `Saw: ${log.caption || 'no caption'}`;
+    const bar = document.createElement('div'); bar.className = 'bar'; bar.title = 'see · write · voice';
+    const total = Math.max(1, log.latency.total);
+    for (const part of ['eyes', 'writer', 'tts'] as const) { const seg = document.createElement('i'); seg.className = part; seg.style.width = `${(log.latency[part] / total) * 100}%`; bar.append(seg); }
+    const times = document.createElement('small'); times.className = 'times'; times.textContent = `see ${log.latency.eyes} · write ${log.latency.writer} · voice ${log.latency.tts} ms · ${log.engine ?? 'no audio'}`;
+    li.append(head, line, caption, bar, times); return li;
   }));
+  const spoken = s.logs.find(log => log.status === 'spoken');
+  el('nowLine').textContent = spoken?.line ?? (s.settings.running ? 'Listening for something worth saying…' : 'The narrator is waiting for something worth saying.');
+  el('nowMeta').textContent = spoken ? `${s.settings.genre} · ${spoken.trigger} · ${new Date(spoken.at).toLocaleTimeString()}` : '';
+  el('nowLine').parentElement!.classList.toggle('idle', !spoken);
+  const live = s.settings.running && !s.settings.muted;
+  el('onair').textContent = s.settings.muted && s.settings.running ? 'Muted' : live ? 'On air' : 'Off air';
+  el('onair').classList.toggle('live', live);
+  button('running').classList.toggle('stop', s.settings.running);
+  button('mute').innerHTML = `${s.settings.muted ? 'Unmute' : 'Mute'} <kbd>M</kbd>`;
+  const obsLive = s.obs.connected && Date.now() - s.obs.lastFrameAt < 5000;
+  el('screen').classList.toggle('live', obsLive || (!!capture && capture.active));
+  el<HTMLImageElement>('eyes').hidden = !obsLive;
+  video.hidden = obsLive;
+  el('eyesSource').textContent = obsLive ? `Seeing OBS layer “${s.obs.source}” only` : capture?.active ? 'Seeing your shared window' : '';
+  if (s.obs.configured && s.obs.error && !capture?.active) el('fixes').textContent = [el('fixes').textContent, s.obs.error].filter(Boolean).join('\n');
+  for (const tile of el('genreTiles').children) tile.setAttribute('aria-checked', String((tile as HTMLElement).dataset.genre === s.settings.genre));
 }
+const genreBlurbs: Record<Settings['genre'], string> = { noir: 'weary detective', nature: 'wildlife documentary', epic: 'ancient legend', sports: 'play-by-play', horror: 'campfire dread', heist: 'plan gone wrong', unhinged: 'talks like chat' };
+el('genreTiles').replaceChildren(...(Object.keys(genreBlurbs) as Settings['genre'][]).map(genre => {
+  const tile = document.createElement('button'); tile.type = 'button'; tile.className = `tile ${genre}`; tile.dataset.genre = genre;
+  tile.setAttribute('role', 'radio'); tile.setAttribute('aria-checked', 'false');
+  const name = document.createElement('b'); name.textContent = genre[0]!.toUpperCase() + genre.slice(1);
+  const blurb = document.createElement('span'); blurb.textContent = genreBlurbs[genre];
+  tile.append(name, blurb);
+  tile.onclick = () => { el<HTMLSelectElement>('genre').value = genre; settings({ genre }); };
+  return tile;
+}));
+if (state) render(state);
 input('protagonist').onchange = () => settings({ protagonist: input('protagonist').value });
 el<HTMLSelectElement>('genre').onchange = () => settings({ genre: el<HTMLSelectElement>('genre').value as Settings['genre'] });
 input('cadence').oninput = () => { el('cadenceValue').textContent = `${input('cadence').value} s`; };
@@ -65,7 +98,7 @@ el<HTMLFormElement>('transcriptForm').onsubmit = event => { event.preventDefault
 let capture: MediaStream | undefined; let frameTimer: ReturnType<typeof setInterval> | undefined;
 const video = el<HTMLVideoElement>('preview');
 const canvas = document.createElement('canvas');
-function stopCapture() { if (frameTimer) clearInterval(frameTimer); frameTimer = undefined; capture?.getTracks().forEach(t => t.stop()); capture = undefined; video.srcObject = null; button('capture').textContent = 'Share game window'; if (state) render(state); }
+function stopCapture() { if (frameTimer) clearInterval(frameTimer); frameTimer = undefined; capture?.getTracks().forEach(t => t.stop()); capture = undefined; video.srcObject = null; button('capture').textContent = 'Share a window instead'; if (state) render(state); }
 button('capture').onclick = async () => {
   if (capture) { stopCapture(); return; }
   try {
@@ -121,3 +154,6 @@ button('clearTwists').onclick = () => twitch({ action: 'clear' });
 el<HTMLSelectElement>('twistMode').onchange = () => twitch({ action: 'mode', mode: el<HTMLSelectElement>('twistMode').value as 'approve' | 'auto', modsOnly: input('modsOnly').checked });
 input('modsOnly').onchange = () => twitch({ action: 'mode', modsOnly: input('modsOnly').checked });
 button('saveBlocklist').onclick = () => twitch({ action: 'blocklist', words: el<HTMLTextAreaElement>('blocklist').value.split('\n') });
+
+// Refresh the "what the narrator sees" preview from OBS frames.
+setInterval(() => { const img = el<HTMLImageElement>('eyes'); if (!img.hidden) img.src = `/api/frame?t=${Date.now()}`; }, 2000);

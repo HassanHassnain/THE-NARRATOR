@@ -103,7 +103,7 @@ describe('beat transaction', () => {
     expect(await s.runner.run(s.input())).toBeUndefined();
     expect(await first).toBeUndefined(); finish(); await new Promise(r => setTimeout(r, 5));
     expect(s.tts.calls).toHaveLength(0); expect(s.publish).not.toHaveBeenCalled(); expect(s.state.beatCount).toBe(0);
-    expect(logs[0]?.reason).toContain('10 seconds');
+    expect(logs[0]?.reason).toMatch(/Beat exceeded [0-9.]+ seconds; skipped/);
   });
   it('mute/skip cancellation prevents late audio and persistent beat commits', async () => {
     const s = setup(); let finish!: () => void;
@@ -163,5 +163,62 @@ describe('prompt and model boundaries', () => {
       expect(await readFile(join(directory, s.state.streamId, 'audio', `${beat!.id}.wav`))).toEqual(s.tts.calls.length ? (await import('../src/server/ai/fakes')).wavSample() : Buffer.alloc(0));
       expect(await readFile(join(directory, s.state.streamId, 'frames', `${beat!.id}.jpg`))).toEqual(Buffer.from('fake frame'));
     } finally { await rm(directory, { recursive: true, force: true }); }
+  });
+});
+describe('chapter titles and wake word', () => {
+  it('drops leaked JSON/HTML from chapter titles and keeps short plain ones', async () => {
+    const { cleanChapterTitle } = await import('../src/server/ai/writer.js');
+    expect(cleanChapterTitle('Fade to Black”, 1”, 0”, [], 0  } </p>')).toBe('Fade to Black');
+    expect(cleanChapterTitle('The Red Door')).toBe('The Red Door');
+    expect(cleanChapterTitle('{"x": 1}')).toBe('');
+    expect(cleanChapterTitle('one two three four five six seven eight')).toBe('');
+  });
+  it('hears common mis-transcriptions of the wake word', async () => {
+    const { wakeWord } = await import('../src/server/director/triggers.js');
+    for (const t of ['Narrator, why?', 'narrater help', 'hey narator', 'nerator stop']) expect(wakeWord(t)).toBe(true);
+    expect(wakeWord('the narration was fine')).toBe(false);
+  });
+});
+describe('chat pulse', () => {
+  it('reads reactions from emote spam and meme phrases, not ordinary chat', async () => {
+    const { reactionOf } = await import('../src/server/twitch/pulse.js');
+    expect(reactionOf('KEKW KEKW KEKW')?.mood).toBe('laughing');
+    expect(reactionOf('L')?.mood).toBe('mourning');
+    expect(reactionOf('???')).toMatchObject({ token: '?', mood: 'confused' });
+    expect(reactionOf('clip it chat')?.token).toBe('clip it');
+    expect(reactionOf('what game is this? lol')).toBeUndefined();
+    expect(reactionOf('!twist the cat did it')).toBeUndefined();
+  });
+  it('fires once for a burst from two chatters, then cools down', async () => {
+    const { ChatPulse } = await import('../src/server/twitch/pulse.js');
+    const fired: string[] = []; const pulse = new ChatPulse(e => fired.push(e.detail));
+    pulse.add({ authorId: 'a', text: 'KEKW' }, 0); pulse.add({ authorId: 'a', text: 'KEKW' }, 1000);
+    expect(fired).toHaveLength(0);
+    pulse.add({ authorId: 'b', text: 'LMAO' }, 2000);
+    expect(fired).toHaveLength(1); expect(fired[0]).toContain('KEKW ×2'); expect(fired[0]).toContain('laughing');
+    for (let t = 3000; t < 9000; t += 1000) pulse.add({ authorId: t % 2000 ? 'a' : 'b', text: 'KEKW' }, t);
+    expect(fired).toHaveLength(1);
+  });
+  it('lets one very excited viewer trigger it with five reactions', async () => {
+    const { ChatPulse } = await import('../src/server/twitch/pulse.js');
+    const fired: string[] = []; const pulse = new ChatPulse(e => fired.push(e.detail));
+    for (let t = 0; t < 5000; t += 1000) pulse.add({ authorId: 'solo', text: 'Pog' }, t);
+    expect(fired).toHaveLength(1);
+  });
+});
+describe('emotes in speech', () => {
+  it('does not speak emote words', async () => {
+    const { stripEmotes } = await import('../src/server/emotes.js');
+    expect(stripEmotes("it's so over KEKW")).toBe("it's so over");
+    expect(stripEmotes('he walked past the diamonds. ICANT')).toBe('he walked past the diamonds.');
+    expect(stripEmotes('KEKW')).toBe('');
+  });
+});
+describe('emote spelling', () => {
+  it('restores emote capitalisation without touching ordinary words', async () => {
+    const { fixEmoteCase } = await import('../src/server/emotes.js');
+    expect(fixEmoteCase('creeper camping that pit, sadge.')).toBe('creeper camping that pit, Sadge.');
+    expect(fixEmoteCase('kekw he fell')).toBe('KEKW he fell');
+    expect(fixEmoteCase('he is cooked')).toBe('he is cooked');
   });
 });

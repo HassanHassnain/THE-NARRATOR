@@ -1,0 +1,2 @@
+# Preserve upstream OFL licence bytes, including their original line endings/spaces.
+src/client/fonts/*-OFL.txt -text -whitespace

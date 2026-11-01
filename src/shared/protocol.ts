@@ -1,9 +1,9 @@
-export const genres = ['noir', 'nature', 'epic', 'sports', 'horror', 'heist'] as const;
+export const genres = ['noir', 'nature', 'epic', 'sports', 'horror', 'heist', 'unhinged'] as const;
 export type Genre = typeof genres[number];
 export type Trigger = 'talk-back' | 'twist' | 'event' | 'transcript' | 'cadence' | 'recap';
 export interface Transcript { text: string; at: number }
 export interface Twist { id: string; author: string; text: string }
-export interface StoryEvent { id: string; kind: 'raid' | 'gift' | 'sub' | 'cheer' | 'follow'; author: string; detail: string }
+export interface StoryEvent { id: string; kind: 'raid' | 'gift' | 'sub' | 'cheer' | 'follow' | 'hype'; author: string; detail: string }
 export interface Settings { protagonist: string; genre: Genre; cadenceSeconds: number; spice: number; lightMode: boolean; muted: boolean; running: boolean }
 export interface StoryState {
   streamId: string; protagonist: string; genre: Genre; cast: Record<string, string>;
@@ -18,13 +18,14 @@ export interface Beat {
   id: string; streamId: string; at: number; trigger: Trigger; genre: Genre;
   caption: string; line: string; chapterTitle: string; chapterChanged: boolean; castUpdates: Narration['castUpdates'];
   twist?: Twist; event?: StoryEvent; latency: Latency; audioUrl: string; frameUrl: string;
-  durationSeconds: number; engine: 'kokoro' | 'say' | 'fake'; lightMode: boolean;
+  source?: 'stream' | 'model-check' | 'simulated'; durationSeconds: number; engine: 'kokoro' | 'say' | 'fake'; lightMode: boolean; protagonist?: string;
 }
 export interface BeatLog { at: number; status: 'spoken' | 'skipped'; engine?: 'kokoro' | 'say' | 'fake'; trigger: Trigger; reason?: string; caption: string; line: string; latency: Latency }
 export interface Health { ollama: boolean; installed: string[]; missing: string[]; fixes: string[]; latencyMs: number; error?: string }
 export interface PublicState {
   settings: Settings; story: StoryState; health: Health; voice: { ready: boolean; engine: string; error?: string };
   twitch: TwitchPublic; overlayKey: string; overlays: number; logs: BeatLog[]; frameAt: number; mic: boolean;
+  obs: { configured: boolean; connected: boolean; source: string; lastFrameAt: number; error?: string | undefined };
 }
 export type ServerMessage = { type: 'state'; state: PublicState } | { type: 'beat'; beat: Beat } | { type: 'stop' } | { type: 'notice'; message: string };
 export type ClientMessage =

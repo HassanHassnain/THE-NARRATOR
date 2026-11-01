@@ -160,3 +160,18 @@ describe('public device auth and markers', () => {
     await expect(createMarker(auth,'Chapter three',notice)).resolves.toBeUndefined();expect(notice).toHaveBeenCalled();
   });
 });
+describe('chat reactions become story beats', () => {
+  it('turns emote spam from two chatters into one hype event and narrates it, without screening raw chat', async () => {
+    const s = setup(); const screened = vi.spyOn(s.screen, 'check');
+    await s.router.handle(message('a1', 'KEKW KEKW'), 1000);
+    await s.router.handle({ ...message('a2', 'KEKW'), authorId: 'a1' }, 2000);
+    await s.router.handle(message('b1', 'LMAO'), 3000);
+    await s.router.handle(message('c1', 'just a normal sentence about the game'), 3500);
+    expect(s.director.events).toHaveLength(1);
+    expect(s.director.events[0]).toMatchObject({ kind: 'hype', author: '' });
+    expect(s.director.events[0]!.detail).toContain('KEKW ×2');
+    expect(screened).not.toHaveBeenCalled();
+    const beat = await s.director.tick(Date.now() + 60000);
+    expect(beat?.event?.kind).toBe('hype'); expect(beat?.trigger).toBe('event');
+  });
+});

@@ -3,10 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE NARRATOR — Demo</title>
+  <title>THE NARRATOR · Recorded demo</title>
 </head>
 <body>
-  <main><p>RECORDED SESSION — REPLAY</p><h1>THE NARRATOR · Demo</h1><p>Scaffold placeholder. Narration is not connected yet.</p></main>
-  <script type="module" src="./main.ts"></script>
+  <p id="banner" class="replay-banner">RECORDED MODEL CHECK — synthetic frame and scripted speech · replay</p>
+  <div class="stage" id="stage">
+    <img id="frame" alt="">
+    <div id="chapter"></div>
+    <div id="credit" class="card"></div>
+    <div id="event" class="card"></div>
+    <div id="subtitles" aria-live="polite"></div>
+    <div id="genre">NOIR</div>
+    <div id="start" class="start">
+      <p class="eyebrow">The Narrator</p>
+      <h1>Your stream has a narrator now.<br>Chat writes the plot.</h1>
+      <button disabled id="play">▶ Play the recorded session</button>
+      <p id="info" class="info"></p>
+    </div>
+  </div>
+  <div class="controls">
+    <button id="toggle" disabled>Pause</button>
+    <span id="progress">—</span>
+    <a href="/episode/demo">Open this session as an Episode ↗</a>
+    <a href="/host">Run it live ↗</a>
+  </div>
+  <audio id="voice"></audio>
+  <script type="module" src="/demo/main.ts"></script>
 </body>
 </html>

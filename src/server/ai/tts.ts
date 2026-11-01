@@ -81,7 +81,8 @@ export class LocalTTS implements TTS {
       signal.throwIfAborted();
       // If writing used most of this beat's deadline, use the faster local
       // fallback rather than starting a Kokoro synthesis that cannot finish.
-      if (budgetMs < Math.max(1800, line.trim().split(/\s+/u).length * 350 + 1400) && process.platform === 'darwin') return this.say(line, preset.speed, signal);
+      // Kokoro q8 measured ~2 s for a 2.5 s clip on an M5; ~220 ms/word covers a 22-word line.
+      if (budgetMs < Math.max(1500, line.trim().split(/\s+/u).length * 220 + 800) && process.platform === 'darwin') return this.say(line, preset.speed, signal);
       try {
         await this.ready(signal); signal.throwIfAborted();
         if (this.status.engine === 'say') return await this.say(line, preset.speed, signal);

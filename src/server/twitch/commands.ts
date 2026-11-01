@@ -4,6 +4,7 @@ import { blocked, config } from '../config.js';
 import type { Screen } from '../ai/screen.js';
 import type { Director } from '../director/index.js';
 import { SeenIds, type ChatMessage } from './types.js';
+import { ChatPulse } from './pulse.js';
 export class CommandRouter {
   mode: 'approve' | 'auto' = 'approve'; modsOnly = false;
   pending: Twist[] = []; blocklist = [...config.blocklist];
@@ -11,15 +12,21 @@ export class CommandRouter {
   private twistAt = new Map<string, number>(); private recapAt = -Infinity;
   private queueEpoch = 0; private blocklistEpoch = 0;
   private voteStart = -Infinity; private votes = new Map<string, Genre>(); private screening = false;
+  // Emote spam and meme phrases become a 'hype' story event. Only whitelisted tokens are passed on, so no model screen is needed.
+  readonly pulse = new ChatPulse(event => {
+    if (this.director.events.length >= 50 || blocked(event.detail, this.blocklist) || this.director.events.some(e => e.kind === 'hype')) return;
+    this.director.events.push(event); this.notice(`Chat reaction: ${event.detail}`); this.changed();
+  });
   constructor(private director: Director, private screen: Screen, private changed: () => void, private notice: (text: string) => void) {}
   async handle(message: ChatMessage, now = Date.now()): Promise<void> {
     if (!this.seen.add(message.sourceId || message.id, now)) return;
     const [token, ...args] = message.text.trim().split(/\s+/); const command = token?.toLowerCase();
+    if (!command?.startsWith('!')) { this.pulse.add(message, now); return; }
     if (command === '!genre') {
       const genre = args[0]?.toLowerCase() as Genre;
       if (!genres.includes(genre)) return;
       const withinWindow = now - this.voteStart <= 30000;
-      if (!withinWindow && now - this.voteStart < 180000) return;
+      if (!withinWindow && now - this.voteStart < 60000) return;
       if (!withinWindow) { this.voteStart = now; this.votes.clear(); }
       this.votes.set(message.authorId, genre);
       if (this.votes.size < 3) this.director.settings.genre = genre;

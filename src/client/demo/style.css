@@ -1,0 +1,23 @@
+/* The overlay stylesheet provides subtitles, cards and genre identities; this file adds the replay stage. */
+html, body { background: #07080a !important; overflow: auto !important; height: auto !important; }
+body { margin: 0; font-family: system-ui, -apple-system, sans-serif; color: #ece4d4; }
+.replay-banner { margin: 0; padding: 10px 16px; text-align: center; font: 600 13px system-ui; letter-spacing: .06em; color: #f3c76b; background: #1d1608; border-bottom: 1px solid #3a2f14; }
+.stage { position: relative; width: min(100vw, calc((100vh - 110px) * 16 / 9)); aspect-ratio: 16 / 9; margin: 0 auto; overflow: hidden; background: #000; container-type: inline-size; }
+.stage #frame { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.stage #frame:not([src]) { display: none; }
+/* Scale overlay typography to the stage instead of the window. */
+.stage #subtitles { font-size: clamp(16px, 2.6cqi, 52px); }
+.stage #chapter { font-size: clamp(20px, 2.6cqi, 46px); }
+.stage .card { font-size: clamp(12px, 1.35cqi, 24px); max-width: 42%; }
+.stage #genre { font-size: clamp(9px, .8cqi, 15px); }
+.start { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; gap: 18px; background: radial-gradient(circle at 50% 40%, #1d1a12, #07080a 70%); padding: 24px; }
+.start[hidden] { display: none; }
+.start .eyebrow { margin: 0; font: 700 13px system-ui; letter-spacing: .32em; text-transform: uppercase; color: #e0aa4d; }
+.start h1 { margin: 0; font: 600 clamp(24px, 4cqi, 56px)/1.15 ui-serif, Georgia, serif; }
+.start button { justify-self: center; font: 700 17px system-ui; padding: 14px 26px; border-radius: 999px; border: 0; background: #e0aa4d; color: #1a1306; cursor: pointer; }
+.start button:disabled { opacity: .5; cursor: default; }
+.info { margin: 0; font: 14px system-ui; color: #a59a87; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; justify-content: center; padding: 14px 16px; font: 14px system-ui; }
+.controls button { font: 600 14px system-ui; padding: 8px 16px; border-radius: 999px; border: 1px solid #3a3f4a; background: #1c1f26; color: #ece4d4; cursor: pointer; }
+.controls a { color: #e0aa4d; text-decoration: none; }
+#progress { color: #a59a87; font-variant-numeric: tabular-nums; }

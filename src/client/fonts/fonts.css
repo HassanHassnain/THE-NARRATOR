@@ -1,0 +1,5 @@
+/* SIL OFL 1.1: licences and upstream checksums are adjacent to these assets. */
+@font-face { font-family: 'Narrator Serif'; src: url('./SourceSerif4[opsz,wght].ttf') format('truetype'); font-weight: 200 900; font-display: swap; }
+@font-face { font-family: 'Narrator Epic'; src: url('./Cinzel[wght].ttf') format('truetype'); font-weight: 400 900; font-display: swap; }
+@font-face { font-family: 'Narrator Sans'; src: url('./BarlowCondensed-SemiBold.ttf') format('truetype'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Narrator Mono'; src: url('./IBMPlexMono-Regular.ttf') format('truetype'); font-weight: 400; font-display: swap; }

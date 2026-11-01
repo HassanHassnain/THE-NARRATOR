@@ -1,3 +1,5 @@
+import { loadEnvFile } from 'node:process';
+try { loadEnvFile(); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -15,7 +17,8 @@ const screen = new FakeScreen(), tts = new FakeTTS(), writer = new FakeWriter();
 const beats: Beat[] = []; const notices: string[] = [];
 let router: CommandRouter;
 const runner = new BeatRunner({eyes:new FakeEyes(),writer,tts,screen},new FileStore(),b=>beats.push(b),()=>{},10000,()=>router.blocklist);
-const director = new Director(runner); director.state=createStory('FixtureHero','noir','simulated-phase2-'+randomUUID()); director.settings.running=true;
+const director = new Director(runner); director.state=createStory('FixtureHero','noir','simulated-phase2-'+randomUUID()); director.source = 'simulated';
+director.settings.running=true;
 director.frame=await readFile('fixtures/local-scene.jpg');
 router=new CommandRouter(director,screen,()=>{},text=>notices.push(text));
 const start=Date.now();

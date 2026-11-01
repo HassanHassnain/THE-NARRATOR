@@ -1,3 +1,5 @@
+import { loadEnvFile } from 'node:process';
+try { loadEnvFile(); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
 import { chromium } from 'playwright';
 import { mkdir, readFile } from 'node:fs/promises';
 import assert from 'node:assert/strict';
@@ -35,7 +37,7 @@ try {
   const overlay = await context.newPage(); overlay.on('pageerror', e => errors.push(e.message));
   await overlay.goto(base+overlayLink);
   await host.getByText('✓ Overlay connected', { exact: true }).waitFor();
-  await host.getByRole('button', { name: 'Share game window', exact: true }).click();
+  await host.locator('#capture').click();
   await host.getByRole('button', { name: 'Stop sharing', exact: true }).waitFor();
   await host.waitForFunction(async () => (await (await fetch('/api/state')).json()).frameAt > 0);
   await host.getByRole('button', { name: 'Enable microphone', exact: true }).click();
@@ -51,10 +53,10 @@ try {
   const beats = JSON.parse(await readFile(`data/streams/${state.story.streamId}/beats.json`, 'utf8')) as { audioUrl: string; frameUrl: string }[];
   assert.equal(beats.length, 1);
   assert.equal((await fetch(base+beats[0]!.audioUrl)).status, 200); assert.equal((await fetch(base+beats[0]!.frameUrl)).status, 200);
-  await host.keyboard.press('m'); await host.getByRole('button', { name: 'Unmute (M)' }).waitFor();
+  await host.keyboard.press('m'); await host.locator('#mute').filter({ hasText: 'Unmute' }).waitFor();
   await host.keyboard.press('s');
-  await host.getByRole('button', { name: 'Unmute (M)' }).click();
-  await host.getByRole('button', { name: 'Mute (M)', exact: true }).waitFor();
+  await host.locator('#mute').click();
+  await host.locator('#mute').filter({ hasText: 'Mute' }).waitFor();
   await app.twitch.router.handle({ id:'browser-twist',sourceId:'browser-twist',authorId:'friend',author:'PlotFriend',text:'!twist The cat owned the red door.',badges:[] });
   await host.locator('#pendingTwists').getByRole('button', { name: 'Approve', exact: true }).click();
   await host.waitForFunction(async () => (await (await fetch('/api/state')).json()).twitch.accepted.length === 1);

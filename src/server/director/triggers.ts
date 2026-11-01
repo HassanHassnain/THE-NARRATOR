@@ -1,6 +1,6 @@
 import type { Settings, StoryEvent, Transcript, Trigger, Twist } from '../../shared/protocol.js';
-export const wakeWord = (text: string) => /\bnarrator\b/iu.test(text);
-const priority: StoryEvent['kind'][] = ['raid', 'gift', 'sub', 'cheer', 'follow'];
+export const wakeWord = (text: string) => /\b(?:narrat(?:or|er|ar)|narator|nerator)\b/iu.test(text);
+const priority: StoryEvent['kind'][] = ['raid', 'gift', 'sub', 'cheer', 'follow', 'hype'];
 export interface TriggerInput {
   now: number; lastAttempt: number; inFlight: boolean; settings: Settings;
   transcript: Transcript[]; twists: Twist[]; events: StoryEvent[]; recap?: boolean;

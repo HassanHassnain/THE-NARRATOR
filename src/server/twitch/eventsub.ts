@@ -41,6 +41,8 @@ export class EventSub {
   private socket: WebSocket | undefined; private sockets = new Set<WebSocket>();
   private idle: ReturnType<typeof setTimeout> | undefined; private reconnect: ReturnType<typeof setTimeout> | undefined;
   private stopped = true; private epoch = 0; private backoff = 1000; private idleSeconds = 15;
+  private waits = new Map<ReturnType<typeof setTimeout>, () => void>();
+  private pause(ms: number) { return new Promise<void>(resolve => { const timer = setTimeout(() => { this.waits.delete(timer); resolve(); }, ms); this.waits.set(timer, resolve); }); }
   private subscribed = new Set<string>(); private handoff = false;
   constructor(private auth: Pick<DeviceAuth, 'helix' | 'user'>, private onChat: (chat: ChatMessage) => void, private onEvent: (event: StoryEvent) => void,
     private status: (connected: boolean, chat: boolean) => void, private notice: (text: string) => void,
@@ -93,18 +95,28 @@ export class EventSub {
   private async subscribe(sessionId: string, epoch: number) {
     if (!this.auth.user) return; this.subscribed.clear();
     for (const body of subscriptionRequests(this.auth.user.id, sessionId)) {
-      if (this.stopped || epoch !== this.epoch) return;
-      try {
-        const response = await this.auth.helix('eventsub/subscriptions', { method: 'POST', body: JSON.stringify(body) });
-        if (response.ok) this.subscribed.add(body.type);
-        else if (response.status === 409) this.notice(`${body.type} is bound to another session. Close the other copy or wait, then reconnect.`);
-        else this.notice(`${body.type} unavailable (${response.status}); check account eligibility and permissions.`);
-      } catch { this.notice(`${body.type} subscription failed; narration remains available.`); }
+      // Requests made while the dev server is still starting can time out; retry before giving up.
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        if (this.stopped || epoch !== this.epoch) return;
+        try {
+          const response = await this.auth.helix('eventsub/subscriptions', { method: 'POST', body: JSON.stringify(body) });
+          if (this.stopped || epoch !== this.epoch) return;
+          if ((response.status === 429 || response.status >= 500) && attempt < 3) { await this.pause(2000 * attempt); continue; }
+          if (response.ok) this.subscribed.add(body.type);
+          else if (response.status === 409) this.notice(`${body.type} is bound to another session. Close the other copy or wait, then reconnect.`);
+          else this.notice(`${body.type} unavailable (${response.status}); check account eligibility and permissions.`);
+          break;
+        } catch {
+          if (this.stopped || epoch !== this.epoch) return;
+          if (attempt === 3) this.notice(`${body.type} subscription failed; narration remains available.`);
+          else await this.pause(2000 * attempt);
+        }
+      }
     }
     if (this.stopped || epoch !== this.epoch) return;
     if (this.subscribed.size) this.backoff = 1000;
     this.status(this.subscribed.size > 0, this.subscribed.has('channel.chat.message'));
-    if (!this.subscribed.size) { this.notice('No Twitch subscriptions enabled. Authorize again.'); this.stopped = true; this.socket?.close(); }
+    if (!this.subscribed.size) { this.notice('No Twitch subscriptions enabled. Authorize again.'); this.stop(); }
   }
-  stop() { this.stopped = true; this.epoch++; this.handoff = false; if (this.idle) clearTimeout(this.idle); if (this.reconnect) clearTimeout(this.reconnect); this.idle = undefined; this.reconnect = undefined; for (const socket of this.sockets) socket.close(); this.sockets.clear(); this.socket = undefined; this.subscribed.clear(); this.status(false, false); }
+  stop() { this.stopped = true; for (const [timer, resolve] of this.waits) { clearTimeout(timer); resolve(); } this.waits.clear(); this.epoch++; this.handoff = false; if (this.idle) clearTimeout(this.idle); if (this.reconnect) clearTimeout(this.reconnect); this.idle = undefined; this.reconnect = undefined; for (const socket of this.sockets) socket.close(); this.sockets.clear(); this.socket = undefined; this.subscribed.clear(); this.status(false, false); }
 }

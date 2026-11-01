@@ -1,0 +1,113 @@
+{
+  "label": "REAL LOCAL MODELS — SIMULATED FRAME AND TRANSCRIPT",
+  "mode": "normal",
+  "model": "gemma3:4b",
+  "streamId": "model-check-10ec7a4a-ddf7-488c-a967-321e4463772f",
+  "beats": [
+    {
+      "id": "7bd6e68c-8a39-47eb-9528-1b315991e6a5",
+      "genre": "noir",
+      "line": "Twenty health and no key. He never learns.",
+      "latency": {
+        "eyes": 3747,
+        "writer": 2068,
+        "tts": 3129,
+        "total": 8959
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/7bd6e68c-8a39-47eb-9528-1b315991e6a5.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/7bd6e68c-8a39-47eb-9528-1b315991e6a5.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "31512f6d-53e7-4e2d-ba26-9e038c859109",
+      "genre": "nature",
+      "line": "The acquisition of a new element, remarkably, came at a steep cost. Hassan’s territorial losses are evident.",
+      "latency": {
+        "eyes": 0,
+        "writer": 3249,
+        "tts": 6695,
+        "total": 9956
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/31512f6d-53e7-4e2d-ba26-9e038c859109.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/31512f6d-53e7-4e2d-ba26-9e038c859109.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "bcf30b37-ef2b-4ef4-9ca7-d9a603e859a2",
+      "genre": "epic",
+      "line": "Thus began the age of consequences, Hassan, fueled by a single, regrettable draught.",
+      "latency": {
+        "eyes": 0,
+        "writer": 2486,
+        "tts": 5182,
+        "total": 7671
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/bcf30b37-ef2b-4ef4-9ca7-d9a603e859a2.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/bcf30b37-ef2b-4ef4-9ca7-d9a603e859a2.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "0d02ddc3-a4a3-4d21-acbf-b887fa55b061",
+      "genre": "sports",
+      "line": "That third attempt highlighted Hassan’s remarkably poor lockpicking skills.",
+      "latency": {
+        "eyes": 0,
+        "writer": 5248,
+        "tts": 3446,
+        "total": 8698
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/0d02ddc3-a4a3-4d21-acbf-b887fa55b061.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/0d02ddc3-a4a3-4d21-acbf-b887fa55b061.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "fa41628e-b67a-40a4-8702-b261a6e12d47",
+      "genre": "horror",
+      "line": "That’s quite the impressive display of inefficient resource management, Hassan.",
+      "latency": {
+        "eyes": 0,
+        "writer": 2329,
+        "tts": 4428,
+        "total": 6761
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/fa41628e-b67a-40a4-8702-b261a6e12d47.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/fa41628e-b67a-40a4-8702-b261a6e12d47.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "c3785ed2-3593-4ad1-9f74-27535424e442",
+      "genre": "heist",
+      "line": "Hassan’s instinct for concealment proved spectacularly, and predictably, misguided.",
+      "latency": {
+        "eyes": 0,
+        "writer": 9475,
+        "tts": 4998,
+        "total": 14480
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/c3785ed2-3593-4ad1-9f74-27535424e442.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/c3785ed2-3593-4ad1-9f74-27535424e442.jpg",
+      "source": "model-check"
+    },
+    {
+      "id": "0291edf0-9961-4791-b7d7-6ab889579d5f",
+      "genre": "unhinged",
+      "line": "actual npc behavior, he’s literally a walking tutorial ICANT",
+      "latency": {
+        "eyes": 0,
+        "writer": 2915,
+        "tts": 3259,
+        "total": 6179
+      },
+      "engine": "kokoro",
+      "audioUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/audio/0291edf0-9961-4791-b7d7-6ab889579d5f.wav",
+      "frameUrl": "/media/model-check-10ec7a4a-ddf7-488c-a967-321e4463772f/frames/0291edf0-9961-4791-b7d7-6ab889579d5f.jpg",
+      "source": "model-check"
+    }
+  ]
+}

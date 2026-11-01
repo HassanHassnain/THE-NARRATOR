@@ -15,7 +15,7 @@ export class DeviceAuth {
     await writeFile(this.file+'.tmp', JSON.stringify(value), { mode: 0o600 }); await chmod(this.file+'.tmp', 0o600); await rename(this.file+'.tmp', this.file); this.tokens = value;
   }
   private async form(path: string, values: Record<string,string>) {
-    return this.http(`https://id.twitch.tv/oauth2/${path}`, { method: 'POST', body: new URLSearchParams(values), signal: AbortSignal.timeout(8000) });
+    return this.http(`https://id.twitch.tv/oauth2/${path}`, { method: 'POST', body: new URLSearchParams(values), signal: AbortSignal.timeout(15000) });
   }
   async restore() {
     if (!this.clientId) return;
@@ -70,8 +70,8 @@ export class DeviceAuth {
   async validate() {
     try {
     const token = await this.token();
-    let response = await this.http('https://id.twitch.tv/oauth2/validate', { headers: { Authorization: `OAuth ${token}` }, signal: AbortSignal.timeout(8000) });
-    if (response.status === 401) response = await this.http('https://id.twitch.tv/oauth2/validate', { headers: { Authorization: `OAuth ${await this.token(true)}` }, signal: AbortSignal.timeout(8000) });
+    let response = await this.http('https://id.twitch.tv/oauth2/validate', { headers: { Authorization: `OAuth ${token}` }, signal: AbortSignal.timeout(15000) });
+    if (response.status === 401) response = await this.http('https://id.twitch.tv/oauth2/validate', { headers: { Authorization: `OAuth ${await this.token(true)}` }, signal: AbortSignal.timeout(15000) });
     if (!response.ok) throw new Error('Twitch token invalid. Connect again.');
     const value = await response.json() as { user_id: string; login: string; client_id: string; scopes?: string[] };
     if (value.client_id !== this.clientId || !value.user_id || !value.login) throw new Error('Saved token belongs to another Twitch application. Connect again.');
@@ -81,7 +81,7 @@ export class DeviceAuth {
     } catch (error) { this.user = undefined; this.changed(); throw error; }
   }
   async helix(path: string, init: RequestInit = {}): Promise<Response> {
-    const call = async (token: string) => this.http(`https://api.twitch.tv/helix/${path}`, { ...init, headers: { ...init.headers, Authorization: `Bearer ${token}`, 'Client-Id': this.clientId, 'Content-Type': 'application/json' }, signal: AbortSignal.timeout(8000) });
+    const call = async (token: string) => this.http(`https://api.twitch.tv/helix/${path}`, { ...init, headers: { ...init.headers, Authorization: `Bearer ${token}`, 'Client-Id': this.clientId, 'Content-Type': 'application/json' }, signal: AbortSignal.any([AbortSignal.timeout(15000), ...(init.signal ? [init.signal] : [])]) });
     const response = await call(await this.token()); return response.status === 401 ? call(await this.token(true)) : response;
   }
   close() { this.epoch++; if (this.pollTimer) clearTimeout(this.pollTimer); if (this.validationTimer) clearInterval(this.validationTimer); }

@@ -3,10 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>THE NARRATOR — Episode</title>
+  <title>THE NARRATOR · Episode</title>
 </head>
 <body>
-  <main><h1>THE NARRATOR · Episode</h1><p>Scaffold placeholder. Narration is not connected yet.</p></main>
-  <script type="module" src="./main.ts"></script>
+  <header class="masthead">
+    <p class="eyebrow">The Narrator presents</p>
+    <h1 id="title">An Episode</h1>
+    <p id="subtitle" class="subtitle"></p>
+    <div class="actions">
+      <button id="card">Download story card (PNG)</button>
+      <button id="export" class="ghost">Download this page (HTML)</button>
+      <select id="picker" aria-label="Choose an episode"></select>
+    </div>
+  </header>
+  <main>
+    <p id="empty" class="empty" hidden>No narrated beats in this stream yet.</p>
+    <div id="story"></div>
+    <section id="castSection" class="cast" hidden>
+      <h2>The cast</h2>
+      <p class="note">Viewers who wrote this story with their plot twists and arrivals.</p>
+      <ul id="cast"></ul>
+    </section>
+  </main>
+  <footer class="colophon">Recorded by THE NARRATOR · generated with local models · viewer credits shown where present</footer>
+  <script type="module" src="/episode/main.ts"></script>
 </body>
 </html>

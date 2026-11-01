@@ -1,6 +1,5 @@
 import { createServer } from 'node:http';
-import { randomBytes } from 'node:crypto';
-import { readFile, stat } from 'node:fs/promises';
+import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, resolve, sep } from 'node:path';
 import type { ViteDevServer } from 'vite';
 import { config, eyesModel, writerModel, resourceVoiceFallback } from './config.js';
@@ -17,11 +16,16 @@ import { BeatRunner } from './director/beatRunner.js';
 import { Director } from './director/index.js';
 import { TwitchService } from './twitch/service.js';
 import { Hub } from './hub.js';
+import { ObsFrames } from './obsFrames.js';
+import { provenance } from './provenance.js';
+import { stableOverlayKey } from './overlayKey.js';
+import { emoteMap, loadEmotes } from './emotes.js';
 const pages: Record<string, string> = { '/': '/host/index.html', '/host': '/host/index.html', '/overlay': '/overlay/index.html', '/episode': '/episode/index.html', '/demo': '/demo/index.html' };
-const mime: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.wav': 'audio/wav' };
+const mime: Record<string, string> = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.wav': 'audio/wav', '.ttf': 'font/ttf' };
 export async function createApp(production = false) {
   const fake = process.env.NARRATOR_FAKE_AI === '1';
-  const key = randomBytes(24).toString('hex');
+  // The overlay key survives restarts so the OBS Browser Source link keeps working.
+  const key = await stableOverlayKey(resolve('data/overlay.key'), fake);
   const store = new FileStore();
   const defaultLight = !fake && resourceVoiceFallback(false);
   const voice = fake ? undefined : new LocalTTS({ preferSystemVoice: resourceVoiceFallback(defaultLight) });
@@ -31,12 +35,25 @@ export async function createApp(production = false) {
   let hub: Hub; let vite: ViteDevServer | undefined;
   let health: Health = { ollama: false, installed: [], missing: [], fixes: [], latencyMs: 0 };
   const logs: BeatLog[] = [];
-  const runner = new BeatRunner(ai, store, beat => { hub.broadcast({ type: 'beat', beat }); twitch?.chapter(beat); }, log => { logs.unshift(log); logs.splice(100); hub.broadcastState(); }, 10000, () => twitch?.router.blocklist ?? config.blocklist);
+  const runner = new BeatRunner(ai, store, beat => { hub.broadcast({ type: 'beat', beat }); twitch?.chapter(beat); }, log => { logs.unshift(log); logs.splice(100); hub.broadcastState(); }, config.limits.beatTimeoutMs ?? 15000, () => twitch?.router.blocklist ?? config.blocklist);
   const director = new Director(runner);
+  // OBS game-layer frames take priority over a browser screen share when OBS is configured.
+  const obs = new ObsFrames(jpeg => { director.frame = jpeg; director.frameAt = Date.now(); }, () => hub?.broadcastState());
   director.settings.lightMode = defaultLight;
+  if (fake) director.source = 'simulated';
   if (fake) director.state.streamId = `simulated-${director.state.streamId}`;
   const state = (): PublicState => ({ settings: director.settings, story: director.state, health,
-    twitch: twitch!.snapshot(), voice: voice?.status ?? { ready: true, engine: 'fake — SIMULATED' }, overlayKey: key, overlays: hub?.overlays ?? 0, logs, frameAt: director.frameAt, mic: director.mic });
+    twitch: twitch!.snapshot(), voice: voice?.status ?? { ready: true, engine: 'fake — SIMULATED' }, overlayKey: key, overlays: hub?.overlays ?? 0, logs, frameAt: director.frameAt, mic: director.mic, obs: obs.status });
+  const emoteController = new AbortController();
+  let closed = false;
+  let emoteUser: string | undefined;
+  function refreshEmotes() {
+    if (fake || closed) return;
+    const user = twitch?.auth.user;
+    if (emoteUser === (user?.id ?? '')) return;
+    emoteUser = user?.id ?? '';
+    void loadEmotes({ signal: emoteController.signal, ...(user ? { twitchUserId: user.id, helix: path => twitch!.auth.helix(path, { signal: emoteController.signal }) } : {}) }).then(() => { if (!closed) hub.broadcastState(); }).catch(() => undefined);
+  }
   let warming = false;
   async function refreshHealth() {
     health = fake ? { ollama: true, installed: [writerModel(), eyesModel()], missing: [], fixes: [], latencyMs: 0 } : await checkHealth(director.settings.lightMode);
@@ -81,7 +98,7 @@ export async function createApp(production = false) {
       hub.broadcastState();
     } else if (message.type === 'frame' && typeof message.jpeg === 'string' && message.jpeg.length < 1_800_000) {
       const bytes = Buffer.from(message.jpeg.replace(/^data:image\/jpeg;base64,/, ''), 'base64');
-      if (bytes[0] === 0xff && bytes[1] === 0xd8) { director.frame = bytes; director.frameAt = Date.now(); }
+      if (bytes[0] === 0xff && bytes[1] === 0xd8 && !(obs.status.connected && Date.now() - obs.status.lastFrameAt < 5000)) { director.frame = bytes; director.frameAt = Date.now(); }
     } else if (message.type === 'transcript' && typeof message.text === 'string' && typeof message.at === 'number' && Number.isFinite(message.at)) director.addTranscript(message.text, message.at);
     else if (message.type === 'mic' && typeof message.active === 'boolean') { director.mic = message.active; hub.broadcastState(); }
     else if (message.type === 'skip') { runner.cancel(); hub.broadcast({ type: 'stop' }); }
@@ -96,9 +113,42 @@ export async function createApp(production = false) {
       if (pathname === '/api/state' || pathname === '/api/config') {
         response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(JSON.stringify(pathname === '/api/state' ? state() : { genres: config.genres, simulated: fake })); return;
       }
+      if (pathname === '/api/emotes') {
+        response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(JSON.stringify(Object.fromEntries(emoteMap))); return;
+      }
+      if (pathname === '/api/frame') {
+        // What the narrator currently sees (local control room preview only).
+        if (!director.frame) { response.writeHead(204).end(); return; }
+        response.writeHead(200, { 'Content-Type': 'image/jpeg', 'Cache-Control': 'no-store' }).end(director.frame); return;
+      }
+      if (pathname === '/api/episodes') {
+        // Streams and legacy unclassified sessions, excluding model checks and simulated runs.
+        const ids = (await readdir(resolve('data/streams')).catch(() => [] as string[])).filter(id => /^[\w-]{1,100}$/.test(id) && !id.startsWith('simulated-'));
+        const list = (await Promise.all(ids.map(async id => { const beats = await store.read(id).catch(() => []); const source = await provenance(id, beats); return beats.length && source !== 'model-check' && source !== 'simulated' ? { id, beats: beats.length, at: beats[0]!.at, protagonist: beats.find(b => b.protagonist)?.protagonist ?? '' } : undefined; }))).filter(Boolean);
+        list.sort((a, b) => b!.at - a!.at);
+        response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(JSON.stringify(list)); return;
+      }
       if (pathname.startsWith('/api/episode/')) {
-        const beats = await store.read(pathname.slice('/api/episode/'.length));
+        const id = pathname.slice('/api/episode/'.length);
+        const saved = await store.read(id); const source = await provenance(id, saved);
+        const beats = saved.map(beat => source === 'unknown' ? beat : { ...beat, source });
         response.writeHead(200, { 'Content-Type': 'application/json' }).end(JSON.stringify(beats)); return;
+      }
+      if (pathname === '/api/demo-info') {
+        const body = await readFile(resolve('fixtures/demo-session/provenance.json')).catch(() => Buffer.from(JSON.stringify({ source: 'unknown' })));
+        response.writeHead(200, { 'Content-Type': 'application/json' }).end(body); return;
+      }
+      if (pathname === '/api/demo') {
+        // Recorded session committed to the repo so judges can replay it without models or Twitch.
+        const body = await readFile(resolve('fixtures/demo-session/beats.json')).catch(() => Buffer.from('[]'));
+        response.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }).end(body); return;
+      }
+      if (pathname.startsWith('/demo-media/')) {
+        const match = /^\/demo-media\/(audio|frames)\/([\w-]{1,100})\.(wav|jpg)$/.exec(pathname);
+        if (!match) { response.writeHead(404).end(); return; }
+        const file = resolve('fixtures/demo-session', match[1]!, `${match[2]}.${match[3]}`);
+        const body = await readFile(file);
+        response.writeHead(200, { 'Content-Type': mime[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'public, max-age=3600' }).end(body); return;
       }
       if (pathname.startsWith('/media/')) {
         const match = /^\/media\/([\w-]{1,100})\/(audio|frames)\/([\w-]{1,100})\.(wav|jpg)$/.exec(pathname);
@@ -107,7 +157,7 @@ export async function createApp(production = false) {
         const body = await readFile(file);
         response.writeHead(200, { 'Content-Type': mime[extname(file)] ?? 'application/octet-stream', 'Cache-Control': 'private, max-age=3600' }).end(body); return;
       }
-      const page = pages[pathname] ?? (/^\/episode\/[^/]+$/.test(pathname) ? pages['/episode'] : undefined);
+      const page = pages[pathname] ?? (/^\/episode\/[\w-]{1,100}$/.test(pathname) ? pages['/episode'] : undefined);
       if (vite) { if (page) request.url = page + url.search; vite.middlewares(request, response, () => response.writeHead(404).end('Not found')); return; }
       const file = resolve(root, '.' + (page ?? pathname));
       if (!file.startsWith(root + sep) || !(await stat(file)).isFile()) { response.writeHead(404).end('Not found'); return; }
@@ -115,12 +165,13 @@ export async function createApp(production = false) {
       response.end(request.method === 'HEAD' ? undefined : await readFile(file));
     } catch (error) { if (!response.headersSent) response.writeHead(error instanceof URIError ? 400 : (error as NodeJS.ErrnoException).code === 'ENOENT' ? 404 : 500); response.end(); }
   });
-  twitch = new TwitchService(director, ai.screen, () => hub.broadcastState(), text => hub.notice(text), fake);
+  twitch = new TwitchService(director, ai.screen, () => { hub.broadcastState(); refreshEmotes(); }, text => hub.notice(text), fake);
   hub = new Hub(server, key, state, onMessage);
-  void twitch.startSaved().catch(error => hub.notice(String(error)));
+  void twitch.startSaved().catch(error => hub.notice(String(error))).finally(refreshEmotes);
+  if (!fake) obs.start();
   if (!production) { const { createServer: createVite } = await import('vite'); vite = await createVite({ server: { middlewareMode: true, hmr: { server } } }); }
   const interval = setInterval(() => { void director.tick().catch(error => hub.notice(String(error))); }, 500);
   const healthInterval = setInterval(() => { void refreshHealth(); }, 10000);
   void refreshHealth();
-  return { server, director, hub, twitch, state, async close() { clearInterval(interval); clearInterval(healthInterval); runner.cancel(); voice?.close(); twitch?.close(); hub.close(); await vite?.close(); server.closeAllConnections(); await new Promise<void>(resolveClose => server.close(() => resolveClose())); } };
+  return { server, director, hub, twitch, state, async close() { closed = true; emoteController.abort(); obs.close(); clearInterval(interval); clearInterval(healthInterval); runner.cancel(); voice?.close(); twitch?.close(); hub.close(); await vite?.close(); server.closeAllConnections(); await new Promise<void>(resolveClose => server.close(() => resolveClose())); } };
 }

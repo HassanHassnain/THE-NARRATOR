@@ -1,3 +1,6 @@
+import { randomUUID } from 'node:crypto';
+import { loadEnvFile } from 'node:process';
+try { loadEnvFile(); } catch (error) { if ((error as NodeJS.ErrnoException).code !== 'ENOENT') throw error; }
 import { readFile, mkdir, writeFile } from 'node:fs/promises';
 import { createLocalClient } from '../src/server/ai/client.js';
 import { LocalEyes } from '../src/server/ai/eyes.js';
@@ -22,7 +25,7 @@ const client: typeof actualClient = { async complete(request, signal) {
     return text;
   } catch (error) { if (process.env.NARRATOR_TRACE === '1') console.log(JSON.stringify({ trace: request.model, ms: Math.round(performance.now() - started), error: String(error) })); throw error; }
 } }; const tts = new LocalTTS({ preferSystemVoice: resourceVoiceFallback(mode === 'light') });
-const state = createStory('Hassan');
+const state = createStory('Hassan', 'noir', `model-check-${randomUUID()}`);
 const frame = await readFile('fixtures/local-scene.jpg');
 let currentGenre: Genre = 'noir';
 const rows: (BeatLog & { genre: Genre })[] = []; const beats: Beat[] = [];
@@ -38,9 +41,9 @@ try {
   genreLoop: for (const [i, genre] of genres.entries()) {
     currentGenre = genre;
     const settings: Settings = { protagonist: 'Hassan', genre, cadenceSeconds: 35, spice: 1, lightMode: mode === 'light', muted: false, running: true };
-    const transcript = ['Narrator, I tried the locked red door with twenty health and no key.', 'Narrator, I dropped my only key into that blue river.', 'Narrator, I drank my last potion before the fight even started.', 'Narrator, that was my third failed lockpicking attempt at the red door.', 'Narrator, recap my story: I lost the key, wasted a potion and failed the red lock.', 'Narrator, I tried hiding behind the red door but set off the alarm instead.'][i]!;
+    const transcript = ['Narrator, I tried the locked red door with twenty health and no key.', 'Narrator, I dropped my only key into that blue river.', 'Narrator, I drank my last potion before the fight even started.', 'Narrator, that was my third failed lockpicking attempt at the red door.', 'Narrator, recap my story: I lost the key, wasted a potion and failed the red lock.', 'Narrator, I tried hiding behind the red door but set off the alarm instead.', 'Narrator, I called myself a pro, then dropped the key in the river.'][i]!;
     for (let attempt = 0; attempt < 2; attempt++) {
-    const beat = await runner.run({ state, settings, frame, transcript: [{ text: transcript, at: Date.now() }], events: [], trigger: 'talk-back' });
+    const beat = await runner.run({ state, settings, frame, transcript: [{ text: transcript, at: Date.now() }], events: [], trigger: 'talk-back', source: 'model-check' });
     await runner.settleSummary();
     const failure = rows.at(-1)?.reason ?? '';
     const repeatedFailure = !!failure && failure === previousFailure; previousFailure = failure;
@@ -51,6 +54,6 @@ try {
     await warmModel(model, AbortSignal.timeout(90000));
     }
   }
-  console.log(`Saved ${beats.length}/6 real ${mode} beats to ${path}`);
-  if (beats.length !== 6) process.exitCode = 1;
+  console.log(`Saved ${beats.length}/${genres.length} real ${mode} beats to ${path}`);
+  if (beats.length !== genres.length) process.exitCode = 1;
 } finally { tts.close(); }
