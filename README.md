@@ -22,12 +22,12 @@ All the AI runs on your own computer. Ollama runs the model that sees the game a
 
 <table>
   <tr>
-    <td width="62%"><img src="docs/media/control-room.png" alt="Control room showing the last line on air, the beat log with timings, and the plot-twist approval setting"></td>
-    <td width="38%"><img src="docs/media/episode.png" alt="Episode page titled Hassan: Match Day, with chapters, narrated lines and a plot-twist credit"></td>
+    <td width="62%" valign="top"><img src="docs/media/control-room.png" alt="Control room showing the last line on air, the beat log with timings, and the plot-twist approval setting"></td>
+    <td width="38%" valign="top"><img src="docs/media/episode.png" alt="Episode page with narrated lines, a plot-twist credit, and the line that calls back the cathedral"></td>
   </tr>
   <tr>
     <td><sub>The control room. A viewer's twist, approved here, was on air 7.1 s later.</sub></td>
-    <td><sub>The episode page for the stream in the GIF.</sub></td>
+    <td><sub>Part of the episode page for the stream in the GIF. The last line calls back the cathedral from two minutes earlier.</sub></td>
   </tr>
 </table>
 
@@ -64,25 +64,15 @@ After that, starting a recording in OBS starts a new episode. No OBS? Click **Sh
 
 | Command | What it does |
 |---|---|
-| `!genre <name>` | Switches the narrator's voice and style: `noir`, `nature`, `epic`, `sports`, `horror`, `heist` or `unhinged`. If 3 or more people vote within 30 s, the majority wins. There's a one-minute cooldown. |
-| `!twist <text>` | Suggests a plot twist, up to 120 characters. A blocklist and the local model check it, then you approve it in the control room (or switch on auto-accept). It goes into the next line with a **PLOT TWIST by @viewer** card. |
+| `!genre` | `!genre sports` switches the narrator's voice and style. The options are `noir`, `nature`, `epic`, `sports`, `horror`, `heist` and `unhinged`. If 3 or more people vote within 30 s, the majority wins, and there's a one-minute cooldown. |
+| `!twist` | `!twist the sheep are planning a coup` suggests a plot twist (up to 120 characters). A blocklist and the local model check it, then you approve it in the control room, or switch on auto-accept. It goes into the next line with a **PLOT TWIST by @viewer** card. |
 | `!recap` | Two short sentences on the story so far. |
 
 Chat reactions don't need a command. If chat bursts with emotes or memes (3 messages from 2 or more people, or 5 from anyone, within 10 s), the narrator reacts. It knows KEKW, ICANT, OMEGALUL, F, L, Sadge, Pog, monkaS, Copium and "?", plus phrases like "clip it", "it's so over", "we're so back", "skill issue" and "no way". Only those tokens reach the model, never the chat messages themselves.
 
 ## How it works
 
-```mermaid
-flowchart LR
-  game["OBS game source"] -- "frame every 10 s" --> eyes["Eyes<br/>gemma3 describes the frame"]
-  mic["Your mic"] -- "Chrome speech-to-text" --> director
-  twitch["Twitch chat and events"] --> director
-  eyes --> director["Director<br/>decides when to speak"]
-  director --> writer["Writer<br/>gemma3, in genre"]
-  writer --> voice["Kokoro voice"]
-  voice --> overlay["Overlay in OBS"]
-  director --> episode["Episode page and stream markers"]
-```
+<p align="center"><img src="docs/media/how-it-works.png" alt="Diagram: the OBS game source goes to the eyes, which describe the frame every 10 s. The eyes, your voice and Twitch chat feed the director, which decides when to speak. The director sends a line to the writer, then the Kokoro voice, then the overlay on your stream, and records it on the episode page."></p>
 
 - The **director** (`src/server/director/`) decides when to speak. You talking to it comes first, then plot twists, Twitch events, chat reactions, you getting excited, and finally the timer. It says one line at a time. If a line fails or takes more than 30 s, it's dropped, so the stream never stalls.
 - The **eyes** describe the game in the background every 10 s, so a line only waits on writing and voice. On my M5 MacBook a line usually lands 4 to 10 s after the moment.
