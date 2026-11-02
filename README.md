@@ -22,12 +22,12 @@ All the AI runs on your own computer. Ollama runs the model that sees the game a
 
 <table>
   <tr>
-    <td width="62%" valign="top"><img src="docs/media/control-room.png" alt="Control room showing the last line on air, the beat log with timings, and the plot-twist approval setting"></td>
-    <td width="38%" valign="top"><img src="docs/media/episode-page.png" alt="Episode page with narrated lines, a plot-twist credit, and the line that calls back the cathedral"></td>
+    <td width="60%" valign="top"><img src="docs/media/control-room.png" alt="Control room showing the last line on air, the beat log with timings, and the plot-twist approval setting"></td>
+    <td width="40%" valign="top"><img src="docs/media/episode-lines.png" alt="Episode page entries: the pink cube line, the plot twist with its credit, and the line that calls back the cathedral"></td>
   </tr>
   <tr>
     <td><sub>The control room. A viewer's twist, approved here, was on air 7.1 s later.</sub></td>
-    <td><sub>Part of the episode page for the stream in the GIF. The last line calls back the cathedral from two minutes earlier.</sub></td>
+    <td><sub>Part of the episode page for the stream in the GIF. The last line calls back a cathedral from two minutes earlier.</sub></td>
   </tr>
 </table>
 
