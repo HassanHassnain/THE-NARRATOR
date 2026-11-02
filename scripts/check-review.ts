@@ -16,6 +16,8 @@ try {
   const errors: string[] = []; context.on('page', page => page.on('pageerror', error => errors.push(error.message)));
   const page = await context.newPage();
   const fixture = JSON.parse(await readFile('fixtures/demo-session/beats.json', 'utf8')) as Beat[];
+  const { label } = JSON.parse(await readFile('fixtures/demo-session/provenance.json', 'utf8')) as { label: string };
+  const lines = fixture.length;
   const evil = '</title><img src=x onerror=alert(1)>';
   const testBeats = fixture.map((b, i) => ({ ...b, protagonist: evil, castUpdates: [{ name: 'CastViewer', role: 'kept the key' }], ...(i === 0 ? { twist: { id: 't', author: 'PlotFriend', text: 'The cat owned the vault.' } } : {}) }));
   await context.route('**/api/demo', route => route.fulfill({ json: testBeats }));
@@ -32,20 +34,20 @@ try {
   const overlay = await context.newPage(); await overlay.goto(base+(await page.locator('#overlay').getAttribute('href'))); await overlay.locator('#genre').waitFor();
   await page.goto(`${base}/episode/demo`); await page.locator('#story article').nth(5).waitFor();
   await mkdir('data/screens/review', { recursive: true }); await page.screenshot({ path: 'data/screens/review/episode-injection-test.png', fullPage: true });
-  assert.equal(await page.locator('#story article').count(), 6); assert((await page.locator('#cast').textContent())?.includes('CastViewer'));
-  assert((await page.locator('#story').textContent())?.includes('PlotFriend')); assert((await page.locator('#subtitle').textContent())?.includes('synthetic'));
+  assert.equal(await page.locator('#story article').count(), lines); assert((await page.locator('#cast').textContent())?.includes('CastViewer'));
+  assert((await page.locator('#story').textContent())?.includes('PlotFriend')); assert((await page.locator('#subtitle').textContent())?.includes(label));
   const htmlDownload = page.waitForEvent('download'); await page.locator('#export').click(); const download = await htmlDownload; const path = await download.path(); assert(path);
   const html = await readFile(path, 'utf8'); assert(html.includes('data:audio/wav;base64,')); assert(html.includes('data:image/jpeg;base64,'));
   const offline = await context.newPage(); await offline.route('**/*', route => route.abort()); await offline.setContent(html);
-  assert.equal(await offline.locator('audio[controls]').count(), 6); assert.equal(await offline.locator('script, img[src="x"]').count(), 0); assert((await offline.title()).includes(evil));
-  assert.equal(await offline.locator('article').count(), 6);
+  assert.equal(await offline.locator('audio[controls]').count(), lines); assert.equal(await offline.locator('script, img[src="x"]').count(), 0); assert((await offline.title()).includes(evil));
+  assert.equal(await offline.locator('article').count(), lines);
   const pngDownload = page.waitForEvent('download'); await page.locator('#card').click(); const png = await (await pngDownload).path(); assert(png);
   await (await pngDownload).saveAs('data/screens/review/summary.png');
   const bytes = await readFile(png); assert.equal(bytes.readUInt32BE(16), 1080); assert.equal(bytes.readUInt32BE(20), 1350);
   await context.route('**/api/demo', route => route.fulfill({ json: fixture }));
   await page.reload(); await page.locator('#story article').nth(5).waitFor();
   await page.screenshot({ path: 'data/screens/review/episode.png', fullPage: true });
-  await page.goto(`${base}/demo`); await page.locator('#play:enabled').waitFor(); assert((await page.locator('#banner').textContent())?.includes('synthetic'));
+  await page.goto(`${base}/demo`); await page.locator('#play:enabled').waitFor(); assert((await page.locator('#banner').textContent())?.includes(label));
   // Use the first two recorded lines to exercise playback, gap pause/resume, completion and replay quickly.
   await context.route('**/api/demo', route => route.fulfill({ json: testBeats.slice(0, 2) })); await page.reload(); await page.locator('#play:enabled').waitFor(); await page.locator('#play').click();
   await page.waitForFunction(() => (document.getElementById('voice') as HTMLAudioElement).currentTime > 0);
@@ -74,5 +76,5 @@ try {
   }
   await context.route('**/api/demo', route => route.fulfill({ json: [] })); await page.reload(); await page.locator('#info').filter({ hasText: 'No recorded' }).waitFor(); assert(await page.locator('#play').isDisabled());
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ check: 'SIMULATED browser review', mode: process.argv.includes('--dev') ? 'dev' : 'production', pages: 4, genres: 7, replay: true, emptyReplay: true, offlineHtmlAudio: 6, htmlEscaping: true, png: '1080x1350', castAndCredits: true, missingMedia404: true, pageErrors: errors }));
+  console.log(JSON.stringify({ check: 'SIMULATED browser review', mode: process.argv.includes('--dev') ? 'dev' : 'production', pages: 4, genres: 7, replay: true, emptyReplay: true, offlineHtmlAudio: lines, htmlEscaping: true, png: '1080x1350', castAndCredits: true, missingMedia404: true, pageErrors: errors }));
 } finally { await browser.close(); await app.close(); clearTimeout(deadline); }

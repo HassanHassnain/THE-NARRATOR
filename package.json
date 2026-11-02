@@ -18,7 +18,6 @@
     "check:browser": "tsx scripts/check-browser.ts",
     "check:twitch": "tsx scripts/check-twitch.ts",
     "demo:capture": "tsx scripts/capture-demo.ts",
-    "screens": "tsx scripts/screens.ts",
     "check:review": "tsx scripts/check-review.ts",
     "check:replay-offline": "tsx scripts/check-replay-offline.ts"
   },

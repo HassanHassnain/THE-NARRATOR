@@ -1,4 +1,3 @@
-import type { Twist } from '../../shared/protocol.js';
 export interface ChatMessage { id: string; sourceId: string; authorId: string; author: string; text: string; badges: string[] }
 export interface ChatSource { start(channel: string): void; stop(): void }
 export type { TwitchPublic } from '../../shared/protocol.js';

@@ -104,6 +104,7 @@ npm run typecheck
 npm run check:local            # one real local-model line per genre, with timings
 npm run check:replay-offline   # the replay with Ollama unavailable
 npm run check:review           # pages, replay, HTML and audio export, PNG card
+npm run check:browser          # screen capture, speech, twist approval and overlay in a real browser
 npm run check:twitch           # simulated chat and EventSub through the real director
 npm run demo:capture -- <streamId>   # make a recorded stream the /demo replay
 ```
